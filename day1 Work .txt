@@ -1,6 +1,8 @@
-
-
-
+DAY 1 — PROJECT FOUNDATION
+• Created the initial HTML structure for the HAWKSTRANGE project.
+• Set up the basic page layout and main sections.
+• Started the initial visual direction of the alien-themed game.
+• Created the foundation for further game development.
 
 
 
