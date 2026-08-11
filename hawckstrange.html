@@ -495,3 +495,205 @@ footer{border-top:1px solid var(--line);padding:70px 0 40px; background:rgba(8,8
 </style>
 </head>
 <body>
+ 
+<!-- SLOW MOTION VIDEO BACKGROUND (playbackRate = 0.35) -->
+<video id="bgVideo" autoplay loop muted playsinline class="bg-video" onplay="this.playbackRate = 0.35;">
+  <source src="4382-178617337.mp4" type="video/mp4">
+</video>
+
+<a href="#main" class="skip-link">Skip to content</a>
+<div class="fog-layer" aria-hidden="true"></div>
+<div class="noise-layer" aria-hidden="true"></div>
+<div class="node-tooltip" id="nodeTooltip" aria-hidden="true"><div class="c"></div><div class="t"></div></div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="top">
+  <div class="nav-inner">
+    <a class="brand" href="#top">UN<span>BUILT</span></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#discover" data-nav>Discover</a>
+      <a href="#ideas" data-nav>Ideas</a>
+      <a href="#projects" data-nav>Projects</a>
+      <a href="#build-together" data-nav>Build Together</a>
+      <a href="#wall" data-nav>The Wall</a>
+      <a href="#workspace" data-nav>My Workspace</a>
+    </nav>
+    <div class="nav-actions">
+      <div class="nav-search" id="navSearchWrap">
+        <input type="text" id="navSearchInput" placeholder="Search ideas, skills, creators…" aria-label="Search UNBUILT">
+      </div>
+      <button class="icon-btn" id="searchToggle" aria-label="Toggle search" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.6" y2="16.6"/></svg>
+      </button>
+      <div class="nav-pos">
+        <button class="icon-btn" id="notifToggle" aria-label="Notifications" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <span class="dot-badge"></span>
+        </button>
+        <div class="dropdown" id="notifDropdown">
+          <div class="dropdown-item"><span class="t">MILO found 3 ideas matching your skills</span><span class="s">2 hours ago</span></div>
+          <div class="dropdown-item"><span class="t">Someone remixed "A second brain for forgotten skills"</span><span class="s">Yesterday</span></div>
+          <div class="dropdown-item"><span class="t">New collaboration request on your idea</span><span class="s">2 days ago</span></div>
+        </div>
+      </div>
+      <button class="icon-btn" id="profileBtn" aria-label="Go to workspace"><span class="avatar">YOU</span></button>
+      <div class="nav-pos">
+        <button class="btn btn-primary btn-sm" id="createToggle" aria-expanded="false">+ Create</button>
+        <div class="create-menu" id="createMenu">
+          <button data-open-idea-builder>I Have an Idea<small>Turn a raw thought into a structured idea page</small></button>
+          <button data-open-req-builder>I Need an Idea<small>Tell us what you can build — we'll find something</small></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============ HERO / DISCOVER ============ -->
+  <section id="discover" class="hero">
+    <canvas id="universeCanvas" aria-hidden="true"></canvas>
+    <div class="hero-content">
+      <p class="eyebrow">Where ideas find builders</p>
+      <h1>Have an idea?<br><em>Someone can build it.</em></h1>
+      <p class="lede">Discover ideas people couldn't build alone, share the ideas living in your head, find collaborators, and turn unfinished concepts into real projects.</p>
+      <div class="hero-ctas">
+        <button class="btn btn-primary" data-open-idea-builder>I Have an Idea</button>
+        <button class="btn btn-outline" data-open-req-builder>I Need Something to Build</button>
+      </div>
+      <div class="hero-search">
+        <span class="hero-search-label">What do you want to build?</span>
+        <div class="hero-search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.6" y2="16.6"/></svg>
+          <input type="text" id="heroSearchInput" aria-label="What do you want to build?">
+          <button class="btn btn-primary btn-sm" id="heroSearchBtn">Search</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="loop-strip" aria-hidden="true">
+    <div class="loop-track" id="loopTrack"></div>
+  </div>
+
+  <!-- ============ IDEAS / DISCOVERY ============ -->
+  <section id="ideas" class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Ideas · 0281 and counting</p>
+        <h2>Ideas nobody has built yet.</h2>
+        <p>Every card explains why it might be worth your time. Sorted by what's alive right now — not just what's popular.</p>
+      </div>
+      <div class="tabs" id="discoveryTabs" role="tablist" aria-label="Discovery filters"></div>
+      <p class="results-note" id="discoveryNote"></p>
+      <div class="card-grid" id="discoveryGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ PROJECTS ============ -->
+  <section id="projects" class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Shipped</p>
+        <h2>What was imagined, versus what got built.</h2>
+        <p>Every finished project keeps its origin story attached — the idea that started it, and everyone who helped finish it.</p>
+      </div>
+      <div id="projectsList" style="display:flex;flex-direction:column;gap:24px;"></div>
+    </div>
+  </section>
+
+  <!-- ============ BUILD TOGETHER ============ -->
+  <section id="build-together" class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Build together</p>
+        <h2>Ideas are looking for the rest of their team.</h2>
+        <p>Say what you'd bring to the table. The creator reviews every offer before anyone commits.</p>
+      </div>
+      <div class="contrib-legend" id="contribLegend"></div>
+      <div id="seekingList"></div>
+    </div>
+  </section>
+
+  <!-- ============ THE WALL ============ -->
+  <section id="wall" class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">The Wall</p>
+        <h2>Unfinished thoughts, out loud.</h2>
+        <p>Nothing here needs to be polished. Post the thought — shape it into an idea later, if it wants to become one.</p>
+      </div>
+      <div class="wall-prompts">
+        <span class="chip">I wish there was a way to…</span>
+        <span class="chip">Someone should build…</span>
+        <span class="chip">This problem keeps annoying me…</span>
+        <span class="chip">I built this, someone should improve it…</span>
+      </div>
+      <div class="wall-columns" id="wallColumns"></div>
+    </div>
+  </section>
+
+  <!-- ============ WORKSPACE ============ -->
+  <section id="workspace" class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">My Workspace</p>
+        <h2>Your creative command centre.</h2>
+        <p>Everything you've imagined, saved, or shipped — in one place. (Demo data shown below.)</p>
+      </div>
+      <div class="workspace-grid">
+        <div class="profile-card">
+          <div class="avatar-lg">YOU</div>
+          <h4>Your Profile</h4>
+          <p class="role">Demo account · JavaScript · AI · UI/UX</p>
+          <div class="stat-grid">
+            <div class="stat"><b>3</b><span>Ideas imagined</span></div>
+            <div class="stat"><b>2</b><span>Projects built</span></div>
+            <div class="stat"><b>1</b><span>Ideas remixed</span></div>
+            <div class="stat"><b>4</b><span>Collaborations</span></div>
+          </div>
+          <div class="chip-row">
+            <span class="tag">JavaScript</span><span class="tag">AI</span><span class="tag">UI/UX</span>
+          </div>
+        </div>
+        <div class="ws-main">
+          <div class="ws-tabs" id="wsTabs" role="tablist" aria-label="Workspace sections"></div>
+          <div class="ws-list" id="wsList"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h2>Ideas shouldn't disappear just because their creator couldn't build them.</h2>
+        <p>UNBUILT is a living ecosystem of ideas and builders — where human imagination becomes something real.</p>
+        <div class="footer-loop">IMAGINE <span style="color:var(--gold)">→</span> SHARE <span style="color:var(--gold)">→</span> DISCOVER <span style="color:var(--gold)">→</span> BUILD <span style="color:var(--gold)">→</span> COLLABORATE <span style="color:var(--gold)">→</span> REMIX <span style="color:var(--gold)">→</span> SHIP</div>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Platform</h5>
+          <a href="#ideas">Discover ideas</a>
+          <a href="#build-together">Build together</a>
+          <a href="#wall">The Wall</a>
+          <a href="#workspace">Workspace</a>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <a href="#top">About</a>
+          <a href="#top">Trust &amp; quality</a>
+          <a href="#top">Guidelines</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 UNBUILT. Someone imagined it. Now someone can build it.</span>
+      <span class="mono">MADE FOR BUILDERS</span>
+    </div>
+  </div>
+</footer>
