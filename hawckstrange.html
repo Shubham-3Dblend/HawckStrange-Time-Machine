@@ -9,9 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,340;0,9..144,440;0,9..144,560;1,9..144,440;1,9..144,500&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* ============================================================
-   TOKENS
-   ============================================================ */
+/*
+   TOKENS*/
 :root{
   --void:#08080a;
   --void-2:#0e0e11;
@@ -100,9 +99,8 @@ input,textarea,select{font-family:inherit;color:inherit;}
 }
 .skip-link:focus{top:16px;}
 
-/* ============================================================
-   AMBIENT BACKGROUND — black centre, soft white fog at corners
-   ============================================================ */
+/* 
+   AMBIENT BACKGROUND — black centre, soft white fog at corners */
 .fog-layer{
   position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
@@ -117,11 +115,11 @@ input,textarea,select{font-family:inherit;color:inherit;}
   position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.035;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
-body > *:not(.fog-layer):not(.noise-layer):not(.bg-video){position:relative;z-index:2;}
+main, footer{position:relative;z-index:2;}
 
-/* ============================================================
+/* 
    LAYOUT UTILITIES
-   ============================================================ */
+    */
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;}
 .section{padding:120px 0;border-top:1px solid var(--line);}
 .section-head{max-width:640px;margin-bottom:56px;}
@@ -221,12 +219,27 @@ body > *:not(.fog-layer):not(.noise-layer):not(.bg-video){position:relative;z-in
   min-height:96vh;display:flex;flex-direction:column;justify-content:center;align-items:center;
   text-align:center;padding:80px 24px 60px;position:relative;overflow:hidden;
 }
-.hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;}
 .hero-content{position:relative;z-index:2;max-width:760px;}
 .hero h1{font-size:clamp(38px,6.6vw,74px);line-height:1.06;font-weight:400;}
 .hero h1 em{font-style:italic;color:var(--gold);font-weight:440;}
 .hero p.lede{margin:26px auto 0;max-width:560px;color:var(--ink-dim);font-size:17px;line-height:1.7;}
 .hero-ctas{display:flex;gap:14px;justify-content:center;margin-top:38px;flex-wrap:wrap;}
+
+/* hero load-in sequence */
+.hero-content .eyebrow,.hero-content h1,.hero-content p.lede,.hero-content .hero-ctas,.hero-content .hero-search{
+  opacity:0;transform:translateY(16px);
+  animation:hero-rise .8s var(--ease) forwards;
+}
+.hero-content .eyebrow{animation-delay:.05s;}
+.hero-content h1{animation-delay:.14s;}
+.hero-content p.lede{animation-delay:.26s;}
+.hero-content .hero-ctas{animation-delay:.38s;}
+.hero-content .hero-search{animation-delay:.48s;}
+@keyframes hero-rise{to{opacity:1;transform:translateY(0);}}
+@media (prefers-reduced-motion: reduce){
+  .hero-content .eyebrow,.hero-content h1,.hero-content p.lede,.hero-content .hero-ctas,.hero-content .hero-search{animation:none;opacity:1;transform:none;}
+}
 .hero-search{
   margin-top:56px;width:100%;max-width:560px;position:relative;
 }
@@ -278,9 +291,9 @@ body > *:not(.fog-layer):not(.noise-layer):not(.bg-video){position:relative;z-in
   font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.08em;padding:5px 10px;border-radius:var(--r-pill);
   border:1px solid var(--line-strong);color:var(--ink-dim);display:flex;align-items:center;gap:6px;flex-shrink:0;
 }
-.status-badge .pulse{width:6px;height:6px;border-radius:50;background:var(--ink-faint);}
-.status-badge[data-status="BUILDING"]{color:var(--sage);border-color:rgba(143,191,138,0.35);}
-.status-badge[data-status="BUILDING"]{color:var(--sage);border-color:rgba(143,191,138,0.35);}
+.status-badge .pulse{width:6px;height:6px;border-radius:50%;background:var(--ink-faint);}
+.status-badge[data-status="BUILDING"] .pulse{background:var(--gold);animation:pulse 1.6s ease-in-out infinite;}
+.status-badge[data-status="BUILT"]{color:var(--sage);border-color:rgba(143,191,138,0.35);}
 .status-badge[data-status="BUILT"] .pulse{background:var(--sage);}
 .status-badge[data-status="CLAIMED"]{color:var(--violet);border-color:rgba(128,131,224,0.35);}
 .status-badge[data-status="CLAIMED"] .pulse{background:var(--violet);}
@@ -493,6 +506,49 @@ details.disclosure[open] > summary{margin-bottom:14px;}
 /* ============================================================
    TOAST
    ============================================================ */
+/* scroll reveal */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease);}
+.reveal.in{opacity:1;transform:translateY(0);}
+@media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;transition:none;}}
+
+/* idea card hover polish */
+.idea-card{transition:transform .28s var(--ease),border-color .28s var(--ease),background .28s var(--ease),box-shadow .28s var(--ease);}
+.idea-card:hover{box-shadow:0 18px 46px rgba(0,0,0,0.38),0 0 0 1px var(--gold-line);}
+.btn{transition:transform .18s var(--ease),background .2s,border-color .2s,box-shadow .2s;}
+.btn:active{transform:scale(0.96);}
+
+/* claimed status dot pulse */
+.status-track .node.active .dot{animation:node-pulse 1.8s ease-in-out infinite;}
+@keyframes node-pulse{
+  0%,100%{box-shadow:0 0 0 4px var(--gold-soft);}
+  50%{box-shadow:0 0 0 9px rgba(231,171,72,0.06);}
+}
+@media (prefers-reduced-motion: reduce){.status-track .node.active .dot{animation:none;}}
+
+/* celebration toast */
+.toast.toast-celebrate{
+  background:linear-gradient(160deg,#1a140a,#100f13);
+  border:1px solid var(--gold-line);
+  box-shadow:0 20px 60px rgba(231,171,72,0.18),0 0 0 1px rgba(231,171,72,0.12);
+  font-weight:500;
+  animation:celebrate-pop .5s var(--ease);
+}
+@keyframes celebrate-pop{
+  0%{transform:scale(0.9) translateY(6px);}
+  55%{transform:scale(1.03) translateY(0);}
+  100%{transform:scale(1) translateY(0);}
+}
+
+/* confetti */
+.confetti-piece{position:fixed;width:7px;height:12px;pointer-events:none;z-index:300;border-radius:2px;opacity:0;
+  animation:confetti-fall 1000ms ease-out forwards;}
+@keyframes confetti-fall{
+  0%{opacity:0;transform:translate(0,0) rotate(0deg);}
+  8%{opacity:1;}
+  100%{opacity:0;transform:translate(var(--x,0),300px) rotate(var(--rot,220deg));}
+}
+@media (prefers-reduced-motion: reduce){.confetti-piece{display:none;}}
+
 .toast-wrap{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center;}
 .toast{
   background:#151318;border:1px solid var(--line-strong);color:var(--ink);padding:13px 22px;border-radius:var(--r-pill);
@@ -540,12 +596,12 @@ footer{border-top:1px solid var(--line);padding:70px 0 40px; background:rgba(8,8
 <a href="#main" class="skip-link">Skip to content</a>
 <div class="fog-layer" aria-hidden="true"></div>
 <div class="noise-layer" aria-hidden="true"></div>
-<div class="node-tooltip" id="node-Tooltip" aria-hidden="true"><div class="c"></div><div class="t"></div></div>
+<div class="node-tooltip" id="nodeTooltip" aria-hidden="true"><div class="c"></div><div class="t"></div></div>
 
-<!--  NAV  -->
- <header class="nav" id="top">
+<!-- ============ NAV ============ -->
+<header class="nav" id="top">
   <div class="nav-inner">
-    <a class="brand" href="#top">UN<span>built</span></a>
+    <a class="brand" href="#top">UN<span>BUILT</span></a>
     <nav class="nav-links" aria-label="Primary">
       <a href="#discover" data-nav>Discover</a>
       <a href="#ideas" data-nav>Ideas</a>
@@ -556,26 +612,26 @@ footer{border-top:1px solid var(--line);padding:70px 0 40px; background:rgba(8,8
       <a href="#workspace" data-nav>My Workspace</a>
     </nav>
     <div class="nav-actions">
-      <div class="nav-search" id="navaSearchWrap">
-        <input type="text" id="navSearchInput" placeholder="search ideas, skills, creaters…" aria-label=":Search UNBUILT">
+      <div class="nav-search" id="navSearchWrap">
+        <input type="text" id="navSearchInput" placeholder="Search ideas, skills, creators…" aria-label="Search UNBUILT">
       </div>
-      <Button class="icon-btn" id="searchToggle" aria-label="Toggle search" aria-expanded="false">
-        <svg vieBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.6" y2="16.6"/></svg>
-        </Button>
-        <div class="nav-pos">
-        <button class="icon-btn" id="notifToggle" aria-label="Notiifications" aria-expanded="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.6"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-          <span class="dot-badge"></span></svg>
+      <button class="icon-btn" id="searchToggle" aria-label="Toggle search" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.6" y2="16.6"/></svg>
+      </button>
+      <div class="nav-pos">
+        <button class="icon-btn" id="notifToggle" aria-label="Notifications" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <span class="dot-badge"></span>
         </button>
         <div class="dropdown" id="notifDropdown"></div>
       </div>
-      <button class="icon-btn" id="profileBtn" aria-label="Go to  workspace"><span class=avatar>YOU</span>/button>
-        <div class="nav-pos">
-          <button class="btn btn-primary btn-sm" id="createToggle" aria-expanded="false">+ Create</button>
-          <div class="create-menu" id="create-menu">
-            <button data-open-idea-builder>I have an Idea<small>Turn a raw thought into a structured idea page</small></button>
-            <button data-open-req-builder>I Need an Idea<small>Tell us what you can build — we'll find something</small></button>
-          </div>
+      <button class="icon-btn" id="profileBtn" aria-label="Go to workspace"><span class="avatar">YOU</span></button>
+      <div class="nav-pos">
+        <button class="btn btn-primary btn-sm" id="createToggle" aria-expanded="false">+ Create</button>
+        <div class="create-menu" id="createMenu">
+          <button data-open-idea-builder>I Have an Idea<small>Turn a raw thought into a structured idea page</small></button>
+          <button data-open-req-builder>I Need an Idea<small>Tell us what you can build — we'll find something</small></button>
+        </div>
       </div>
     </div>
   </div>
@@ -583,161 +639,161 @@ footer{border-top:1px solid var(--line);padding:70px 0 40px; background:rgba(8,8
 
 <main id="main">
 
-  <!-- HERO / DISCOVER-->
+  <!-- ============ HERO / DISCOVER ============ -->
   <section id="discover" class="hero">
-    <canvas id="UniverseCanvas" aria-hidden="true"></canvas>
+    <canvas id="universeCanvas" aria-hidden="true"></canvas>
     <div class="hero-content">
-      <p class="eyebrow">where ideas find builders</p>
-      <h1>Have an idea?<br><em>Someone can built it.</em></h1>
-      <p class="lede">Discover ideas people couldnt build alone, share the ideas living in your head, find collabor</p>
-      </div class="hero-ctas">
-        <button class="btn btn-primary" data-open-ideai-builder>I Have an Idea</button>
-        <button class="btn btn-outline" data-open-req-builder>I Need somrthing to  build</button>
+      <p class="eyebrow">Where ideas find builders</p>
+      <h1>Have an idea?<br><em>Someone can build it.</em></h1>
+      <p class="lede">Discover ideas people couldn't build alone, share the ideas living in your head, find collaborators, and turn unfinished concepts into real projects.</p>
+      <div class="hero-ctas">
+        <button class="btn btn-primary" data-open-idea-builder>I Have an Idea</button>
+        <button class="btn btn-outline" data-open-req-builder>I Need Something to Build</button>
       </div>
-      <div  class="hero-search">
-        <span class-="hero-search-label">What do  you wnat to build?</span>
+      <div class="hero-search">
+        <span class="hero-search-label">What do you want to build?</span>
         <div class="hero-search-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.6" y2="16.6"/></svg>
           <input type="text" id="heroSearchInput" aria-label="What do you want to build?">
-          <button class="btn btnn-primaryy btn-sm" id="HeroSearchBtn">Search</button>
+          <button class="btn btn-primary btn-sm" id="heroSearchBtn">Search</button>
         </div>
       </div>
     </div>
   </section>
 
   <div class="loop-strip" aria-hidden="true">
-    <div class="loop-track" id="looptrack"></div>
+    <div class="loop-track" id="loopTrack"></div>
   </div>
 
-  <!-- IDEAS / DISCOVERY-->
+  <!-- ============ IDEAS / DISCOVERY ============ -->
   <section id="ideas" class="section">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow">Ideas </p> · 0281 and counting</p>
-        <h2>Ideas nobody has build has built yet.</h2>
-        <p>Every card explain why it might be worth your time. Sorted by what's alive right now — not just what's popular.</p>
+        <p class="eyebrow">Ideas · 0281 and counting</p>
+        <h2>Ideas nobody has built yet.</h2>
+        <p>Every card explains why it might be worth your time. Sorted by what's alive right now — not just what's popular.</p>
       </div>
-      <div class="Tabs" id="discoveryTabs" role="tablist" aria0-label="Discoveyry filters"></div>
-      <p class="results-note" id="discoverNote"></p>
-      <div class="card-grid" id="discoveryGrid"></div> 
+      <div class="tabs" id="discoveryTabs" role="tablist" aria-label="Discovery filters"></div>
+      <p class="results-note" id="discoveryNote"></p>
+      <div class="card-grid" id="discoveryGrid"></div>
     </div>
   </section>
 
-  <!--PROJECTS-->
-  <sections id="build-together" class="section">
+  <!-- ============ PROJECTS ============ -->
+  <section id="projects" class="section">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow">build together</p>
-        <h2>Ideas are looking for the rest of their team.</h2>
-        <p>Say what you'd bring to the table.The creators reviews every offer before anyone commits.</p>
+        <p class="eyebrow">Shipped</p>
+        <h2>What was imagined, versus what got built.</h2>
+        <p>Every finished project keeps its origin story attached — the idea that started it, and everyone who helped finish it.</p>
       </div>
-      <div class="contrib-legend" id="contriblegend"></div>
-      </div> id="seekingList"></div>
+      <div id="projectsList" style="display:flex;flex-direction:column;gap:24px;"></div>
     </div>
-  </sections>
+  </section>
 
-  <!-- BUILD TOGETHER -->
+  <!-- ============ BUILD TOGETHER ============ -->
   <section id="build-together" class="section">
     <div class="wrap">
       <div class="section-head">
         <p class="eyebrow">Build together</p>
-        <h2>Ideas are looking for the rest of their <team>.</h2>
+        <h2>Ideas are looking for the rest of their team.</h2>
+        <p>Say what you'd bring to the table. The creator reviews every offer before anyone commits.</p>
       </div>
-      <div class="contrib-legend" id="contriblegend"></div>
+      <div class="contrib-legend" id="contribLegend"></div>
       <div id="seekingList"></div>
     </div>
   </section>
- 
-  <!-- THE WALL -->
+
+  <!-- ============ THE WALL ============ -->
   <section id="wall" class="section">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow">The wall</p>
+        <p class="eyebrow">The Wall</p>
         <h2>Unfinished thoughts, out loud.</h2>
-        <p>Nothing here needs to be polished.Post the thought  - shape it into an idea later, if it wants to become one.</P>
+        <p>Nothing here needs to be polished. Post the thought — shape it into an idea later, if it wants to become one.</p>
       </div>
       <div class="wall-prompts">
         <span class="chip">I wish there was a way to…</span>
         <span class="chip">Someone should build…</span>
         <span class="chip">This problem keeps annoying me…</span>
-        <span class="chip">I build this, someone sshould improve it…</span>           
+        <span class="chip">I built this, someone should improve it…</span>
       </div>
       <div class="wall-columns" id="wallColumns"></div>
     </div>
   </section>
- 
-  <!-- IDEA GRAVYARD -->
-  <section id="gravyard" class="section">
-    <div class="=wrap">
+
+  <!-- ============ IDEA GRAVEYARD ============ -->
+  <section id="graveyard" class="section">
+    <div class="wrap">
       <div class="section-head">
-        <P class="eyebrow">The Graveyard</P>
+        <p class="eyebrow">The Idea Graveyard</p>
         <h2>Abandoned, not gone.</h2>
         <p>Every idea here stalled for a real reason. Read why, then decide if it's worth reviving.</p>
       </div>
-      <div class="card-grid" id="graveyard-card"></div>    
+      <div class="card-grid" id="graveyardGrid"></div>
     </div>
   </section>
 
-  <!-- WORKSPACE -->
+  <!-- ============ WORKSPACE ============ -->
   <section id="workspace" class="section">
     <div class="wrap">
-     <div class="section-head">
-      <p class="section-head">
-        <h2>Your creative cammand centre.</h2>
-        <p>Everything you've imagined, saved, or shipped - in one place. (Demo data shown below.)</p>
+      <div class="section-head">
+        <p class="eyebrow">My Workspace</p>
+        <h2>Your creative command centre.</h2>
+        <p>Everything you've imagined, saved, or shipped — in one place. (Demo data shown below.)</p>
       </div>
       <div class="workspace-grid">
         <div class="profile-card">
-        <div class="avatar-lg">YOU</div>
-        <h4>Your Profile</h4>  
-        <p class="rol">Demo account · Javascript · AI · UI/UX</p>
-        <div class="start-grid" id="profile-stats"></div>
-        <div class="chip-row">
-          <span class="tag">Javascript</span><span class="tag">AI</span><span class="tag">UI/UX</span>
+          <div class="avatar-lg">YOU</div>
+          <h4>Your Profile</h4>
+          <p class="role">Demo account · JavaScript · AI · UI/UX</p>
+          <div class="stat-grid" id="profileStats"></div>
+          <div class="chip-row">
+            <span class="tag">JavaScript</span><span class="tag">AI</span><span class="tag">UI/UX</span>
+          </div>
         </div>
-      </div>
         <div class="ws-main">
-          <div class="ws-tabs" id="ws-Tabs" role="tablist" aria-label="Workspace section"></div>
+          <div class="ws-tabs" id="wsTabs" role="tablist" aria-label="Workspace sections"></div>
           <div class="ws-list" id="wsList"></div>
         </div>
       </div>
-    </div>  
+    </div>
   </section>
 
 </main>
 
-<!-- FOOTER -->
+<!-- ============ FOOTER ============ -->
 <footer>
   <div class="wrap">
-   <div class="footer-grid">
-    <div class="footer-brand">
-      <h2>Ideas shouldn't disappear just because their creator couldn't build them.</h2>
-      <p>UNBUILT is a living ecosystem of ideas and builders - where humans imagination becomees something real.</p.>
-      <div class="footer-loop">IMAGINE <span style="color:var(--gold)">→</span> SHARE <span style="color:var(--gold)">→</span> DISCOVER <span style="color:var(--gold)">→</span> BUILD <span style="color:var(--gold)">→</span> COLLABORATE <span style="color:var(--gold)">→</span> REMIX <span style="color:var(--gold)">→</span> SHIP</div>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h2>Ideas shouldn't disappear just because their creator couldn't build them.</h2>
+        <p>UNBUILT is a living ecosystem of ideas and builders — where human imagination becomes something real.</p>
+        <div class="footer-loop">IMAGINE <span style="color:var(--gold)">→</span> SHARE <span style="color:var(--gold)">→</span> DISCOVER <span style="color:var(--gold)">→</span> BUILD <span style="color:var(--gold)">→</span> COLLABORATE <span style="color:var(--gold)">→</span> REMIX <span style="color:var(--gold)">→</span> SHIP</div>
       </div>
       <div class="footer-links">
         <div class="footer-col">
-          <h5>Plateform</h5>
+          <h5>Platform</h5>
           <a href="#ideas">Discover ideas</a>
-          <a href="#build-together">Build Together</a>
+          <a href="#build-together">Build together</a>
           <a href="#wall">The Wall</a>
-          <a href="#gravyard">Idea Graveyard</a>
+          <a href="#graveyard">Idea Graveyard</a>
           <a href="#workspace">Workspace</a>
         </div>
         <div class="footer-col">
           <h5>Company</h5>
-          <a href="#top">About</a>         
+          <a href="#top">About</a>
         </div>
       </div>
-    </div> 
-    <div class="footer-bottom">
-      <span>© 2026 UNDUILT. Someone imagined it. Now someone can build it.</span>
-      <span class="=mono">MADE FOR BUILDERS</span>
     </div>
-  </DIV>
+    <div class="footer-bottom">
+      <span>© 2026 UNBUILT. Someone imagined it. Now someone can build it.</span>
+      <span class="mono">MADE FOR BUILDERS</span>
+    </div>
+  </div>
 </footer>
 
-<!-- MILO  -->
+<!-- ============ MILO ============ -->
 <button class="milo-btn" id="miloBtn" aria-label="Open HAWKSTRANGE, your idea assistant" aria-expanded="false">
   <svg viewBox="0 0 60 60" fill="none">
     <ellipse cx="30" cy="34" rx="16" ry="18" fill="#cfe8e0"/>
@@ -750,7 +806,7 @@ footer{border-top:1px solid var(--line);padding:70px 0 40px; background:rgba(8,8
     <circle cx="30" cy="7" r="2.4" fill="#e7ab48"/>
   </svg>
 </button>
-<div class="minlo-panel" id="miloanel" role="status" aria-live="polite">
+<div class="milo-panel" id="miloPanel" role="status" aria-live="polite">
   <div class="row">
     <svg viewBox="0 0 60 60" fill="none">
       <ellipse cx="30" cy="34" rx="16" ry="18" fill="#cfe8e0"/>
@@ -758,19 +814,19 @@ footer{border-top:1px solid var(--line);padding:70px 0 40px; background:rgba(8,8
       <ellipse cx="38" cy="30" rx="5.4" ry="7" fill="#0b0b0e"/>
       <ellipse cx="23.6" cy="27.4" rx="1.6" ry="2" fill="#fff"/>
       <ellipse cx="39.6" cy="27.4" rx="1.6" ry="2" fill="#fff"/>
-      <path d="M24 41 Q30 46 36 42" stroke="#0b0b0e" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      <path d="M24 42 Q30 46 36 42" stroke="#0b0b0e" stroke-width="1.6" fill="none" stroke-linecap="round"/>
     </svg>
     <div>
-      <div class="label">HAWCKSTRANGE</div>
-      <p id="miloText">Tell me what you know, how much time you hai and how difficult you want the challenge to be.</p>
+      <div class="label">HAWKSTRANGE</div>
+      <p id="miloText">Tell me what you know, how much time you have, and how difficult you want the challenge to be.</p>
     </div>
   </div>
 </div>
 
-<!-- TOASTS -->
-<div class="toasts-wrap" id="toastsWrap" aria-live="polite"></div>
+<!-- ============ TOASTS ============ -->
+<div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
 
-<!-- MODAL: REQUIRMENT BUILDER -->
+<!-- ============ MODAL: REQUIREMENT BUILDER ============ -->
 <div class="overlay" id="reqOverlay" role="dialog" aria-modal="true" aria-labelledby="reqTitle">
   <div class="modal modal-wide">
     <button class="icon-btn modal-close" data-close="reqOverlay" aria-label="Close">
@@ -874,5 +930,1378 @@ const IDEAS = [
     status:'BUILDING', builders:3, saves:301, remixes:1, hasRemix:false,
     sections:['trending','gems'] },
 
+  { id:'0442', title:'A budget that fights back', category:'FINANCE',
+    tags:['AI','FINANCE','BEGINNER'],
+    problem:"Spending trackers show you what you already did. They never show up before the impulse buy.",
+    who:"Anyone who's opened a budgeting app the morning after, not the moment before.",
+    idea:"A spending tracker that role-plays as your future self and briefly negotiates with you before every impulse purchase over a threshold you set.",
+    why:"The best financial tools intervene at the decision, not the receipt.",
+    vision:"I built the first version for myself after a $400 'treat yourself' week. It worked, embarrassingly well.",
+    needs:['Bank API integration','Lightweight LLM persona','Browser extension shell'],
+    tech:['Plaid-style API','LLM','Chrome extension'], skills:['Frontend','Backend','AI'],
+    difficulty:'Beginner', time:'Weekend', team:'Solo',
+    dna:{innovation:74,depth:62,impact:80,difficulty:48,creativity:86},
+    status:'BUILT', builders:1, saves:540, remixes:3, hasRemix:true,
+    sections:['recent','favorites'],
+    builtSummary:"Shipped as a browser extension that intercepts checkout pages and opens a 15-second negotiation chat before you can pay.",
+    contributors:['Ren A. — Frontend','Solo build, later joined by one contributor for the LLM prompts'] },
+
+  { id:'0087', title:'Office hours for lonely founders', category:'COMMUNITY',
+    tags:['COMMUNITY','REAL-WORLD','INTERMEDIATE'],
+    problem:"First-time founders make the same avoidable mistakes because nobody senior is close enough to say so.",
+    who:"Solo and first-time founders without a network of operators to call.",
+    idea:"A matching platform that pairs first-time founders with retired operators for one unscripted hour a week — explicitly no pitch decks allowed.",
+    why:"Founder loneliness is a real, measurable churn factor, and most mentorship programs are transactional.",
+    vision:"I once got the best advice of my career from a stranger on a flight. I want to make that a weekly thing.",
+    needs:['Matching algorithm','Scheduling layer','Light video integration'],
+    tech:['Postgres','Calendar API','WebRTC'], skills:['Backend','UI/UX','Project Management'],
+    difficulty:'Intermediate', time:'1 Week', team:'2 people',
+    dna:{innovation:66,depth:58,impact:84,difficulty:52,creativity:70},
+    status:'UNBUILT', builders:0, saves:145, remixes:0, hasRemix:false,
+    sections:['gems','needed'] },
+
+  { id:'0553', title:'A museum for unfinished software', category:'DEV TOOLS',
+    tags:['DEVELOPER TOOLS','OPEN SOURCE','BEGINNER'],
+    problem:"Abandoned repos disappear without their context, so the next person repeats every dead end.",
+    who:"Open-source maintainers and anyone who has ever forked a repo with no commits since 2019.",
+    idea:"An archive that preserves abandoned open-source projects along with the story of why they stopped — a searchable graveyard that actually teaches something.",
+    why:"Failure is data. Right now it just gets deleted.",
+    vision:"I found three separate abandoned attempts at the exact tool I needed. None of them explained why they stopped.",
+    needs:['GitHub API integration','Structured shutdown-reason submissions','Search index'],
+    tech:['GitHub API','Elasticsearch','Static site'], skills:['Backend','Database','Frontend'],
+    difficulty:'Beginner', time:'2–4 Weeks', team:'Solo',
+    dna:{innovation:79,depth:55,impact:71,difficulty:40,creativity:81},
+    status:'UNBUILT', builders:1, saves:167, remixes:0, hasRemix:false,
+    sections:['gems','trending'] },
+
+  { id:'0210', title:'Plant doctor for smallholder farmers', category:'CLIMATE',
+    tags:['AI','REAL-WORLD','ADVANCED'],
+    problem:"Crop disease diagnosis apps assume a signal. Most smallholder farms don't have one.",
+    who:"Smallholder farmers in low-connectivity regions losing yield to disease they can't identify in time.",
+    idea:"An offline-first phone app that diagnoses crop disease from a photo on-device, then quietly syncs findings the next time it finds a signal.",
+    why:"Every day of delay in diagnosis is yield that doesn't come back.",
+    vision:"A cousin who farms told me the nearest agricultural officer visits once a season, if that.",
+    needs:['On-device vision model','Offline sync architecture','Local-language UI'],
+    tech:['TensorFlow Lite','SQLite sync','Android'], skills:['AI','Backend','UI/UX'],
+    difficulty:'Advanced', time:'1–3 Months', team:'3–5 people',
+    dna:{innovation:83,depth:80,impact:96,difficulty:85,creativity:75},
+    status:'BUILDING', builders:5, saves:288, remixes:1, hasRemix:false,
+    sections:['needed','trending'] },
+
+  { id:'0629', title:"A game that teaches you to lose well", category:'GAMES',
+    tags:['GAMES','UNUSUAL','INTERMEDIATE'],
+    problem:"Most games treat failure as punishment instead of material.",
+    who:"Players tired of roguelikes where a loss just means starting the exact same run over.",
+    idea:"A roguelike where every failed run literally becomes part of the next player's terrain — your death is someone else's level design.",
+    why:"Loss is the most reliable thing a game generates. Nobody uses it as content.",
+    vision:"I kept dying in the same spot in a game and thought: what if that spot remembered me?",
+    needs:['Procedural terrain from run data','Shared-world backend','Core gameplay loop'],
+    tech:['Game engine','Multiplayer backend','Procedural generation'], skills:['Backend','3D','UI/UX'],
+    difficulty:'Intermediate', time:'2–4 Weeks', team:'2 people',
+    dna:{innovation:90,depth:69,impact:60,difficulty:66,creativity:97},
+    status:'UNBUILT', builders:2, saves:176, remixes:0, hasRemix:false,
+    sections:['unusual','trending'] },
+
+  { id:'0015', title:"The interview a rejection letter never gives you", category:'PRODUCTIVITY',
+    tags:['AI','PRODUCTIVITY','INTERMEDIATE'],
+    problem:"Rejection emails say 'we've decided to move forward with other candidates' and nothing else, ever.",
+    who:"Job seekers stuck guessing what actually went wrong in an application.",
+    idea:"An AI that reverse-engineers real, anonymized rejection patterns from public job-board data, so applicants can see what usually goes wrong at each stage.",
+    why:"Opaque rejection is a solved information problem that nobody has bothered to solve.",
+    vision:"I sent 60 applications last year. I still don't know what was wrong with any of them.",
+    needs:['Anonymized outcome dataset','Pattern-matching model','Privacy-safe data pipeline'],
+    tech:['LLM','Data pipeline','Anonymization layer'], skills:['AI','Backend','Database'],
+    difficulty:'Intermediate', time:'1–3 Months', team:'2 people',
+    dna:{innovation:81,depth:73,impact:78,difficulty:70,creativity:79},
+    status:'CLAIMED', builders:1, saves:203, remixes:0, hasRemix:false,
+    sections:['needed','gems'] },
+
+  { id:'0777', title:'A second chance for expired medicine', category:'HEALTH',
+    tags:['REAL-WORLD','FINANCE','ADVANCED'],
+    problem:"Pharmacies destroy still-safe, near-expiry medication while free clinics run short of the same drugs.",
+    who:"Free and low-cost clinics, and every pharmacy that has to legally destroy usable stock.",
+    idea:"A logistics layer that flags near-expiry, still-safe medication and reroutes it from pharmacies to free clinics before it's destroyed.",
+    why:"This is a routing problem wearing a policy costume. The medicine already exists.",
+    vision:"A pharmacist told me how much they throw out every month. The number didn't leave me alone.",
+    needs:['Inventory integration','Routing and compliance logic','Clinic-side intake app'],
+    tech:['REST APIs','Postgres','Route optimization'], skills:['Backend','Database','Project Management'],
+    difficulty:'Advanced', time:'1–3 Months', team:'3–5 people',
+    dna:{innovation:76,depth:74,impact:97,difficulty:80,creativity:68},
+    status:'BUILT', builders:4, saves:412, remixes:0, hasRemix:false,
+    sections:['recent','favorites'],
+    builtSummary:"Live in 12 pharmacies across two cities, rerouting near-expiry medication to free clinics within 48 hours of being flagged.",
+    contributors:['Priya K. — Backend','Tomas R. — Logistics','Dee W. — Compliance'] },
+
+  { id:'0033', title:'A landlord reference check that isn’t a rumor mill', category:'COMMUNITY',
+    tags:['COMMUNITY','TRUST','INTERMEDIATE'],
+    problem:"Renters have almost no reliable way to check a landlord's history before signing a lease.",
+    who:"First-time renters and anyone moving to a new city with no local network to ask.",
+    idea:"A verified, moderated database of landlord track records sourced from lease documents and dispute records, not anonymous rants.",
+    why:"Tenants make five-figure decisions on total strangers' word — or nothing at all.",
+    vision:"A friend signed a lease with a landlord who had three open housing complaints. She had no way to know.",
+    needs:['Public records ingestion','Identity-verified reviews','Moderation pipeline'],
+    tech:['Public records API','Postgres','Moderation queue'], skills:['Backend','Database','Project Management'],
+    difficulty:'Advanced', time:'1–3 Months', team:'3–5 people',
+    dna:{innovation:70,depth:66,impact:85,difficulty:78,creativity:58},
+    status:'ABANDONED', builders:0, saves:88, remixes:0, hasRemix:false,
+    sections:['graveyard'],
+    abandonReason:'Legal exposure — nobody could agree on a moderation standard that wouldn’t get the project sued.' },
+
+  { id:'0198', title:'A group chat that actually schedules the plan', category:'PRODUCTIVITY',
+    tags:['PRODUCTIVITY','AI','BEGINNER'],
+    problem:"Every group trip or dinner plan dies in a chat thread of 40 messages and no decision.",
+    who:"Friend groups who mean to hang out and somehow never lock a date.",
+    idea:"A lightweight bot that reads a group chat's back-and-forth and proposes the actual best time, then confirms it with one tap per person.",
+    why:"The technology to solve this has existed for a decade. Nobody has bothered to make it invisible enough.",
+    vision:"Our group chat has been 'trying to plan a trip' for eleven months.",
+    needs:['Chat platform integration','Availability parsing','One-tap confirm flow'],
+    tech:['Chat platform API','NLP','Calendar sync'], skills:['Backend','AI','Frontend'],
+    difficulty:'Beginner', time:'1 Week', team:'Solo',
+    dna:{innovation:52,depth:40,impact:55,difficulty:35,creativity:48},
+    status:'ABANDONED', builders:0, saves:64, remixes:0, hasRemix:false,
+    sections:['graveyard'],
+    abandonReason:'No obvious business model, and the original builder lost interest after the API access got expensive.' }
+];
+
+const WALL_POSTS = [
+  { text:"I wish there was a way to know which of my old browser tabs I actually meant to come back to.", tag:'PRODUCTIVITY' },
+  { text:"Someone should build a doorbell that texts the delivery driver instead of waking the baby.", tag:'DAILY LIFE' },
+  { text:"I have an idea for teaching kids to code through their pet's actual behaviour, but I can't build it.", tag:'EDUCATION' },
+  { text:"This problem keeps annoying me: every recipe app assumes I already own forty spices.", tag:'DAILY LIFE' },
+  { text:"I built a tiny sensor that tells plants apart from weeds by root vibration. Someone should make it work outdoors.", tag:'HARDWARE' },
+  { text:"Someone should build a way to leave a voice note for the next tenant, not just the landlord.", tag:'COMMUNITY' }
+];
+
+const DISCOVERY_TABS = [
+  { key:'trending', label:'Trending Ideas' },
+  { key:'gems', label:'Hidden Gems' },
+  { key:'unusual', label:'Most Unusual' },
+  { key:'needed', label:'Most Needed' },
+  { key:'recent', label:'Recently Built' },
+  { key:'favorites', label:'Community Favorites' }
+];
+
+const CONTRIB_TYPES = ['Frontend','Backend','AI','UI/UX','Hardware','Research','Testing','Documentation','Project Management'];
+
+const HERO_PLACEHOLDERS = [
+  "A competition-level project…",
+  "Something involving AI…",
+  "A project solving a real-world problem…",
+  "Something I can build this weekend…",
+  "Something nobody around me has built…"
+];
+
+/* ============================================================
+   STATE ENGINE — persists real actions (save, build intent, remix,
+   publish, collaboration) to localStorage so they aren't fake.
+   ============================================================ */
+const LS_KEY = 'unbuilt_state_v2';
+function defaultState(){
+  return {
+    saved: [IDEAS[2].id, IDEAS[8].id],
+    buildIntents: {},
+    myIdeas: [IDEAS[0].id, IDEAS[5].id, IDEAS[3].id],
+    remixIds: [],
+    collabRequests: [
+      { id:'c1', name:'Maya', ideaId:IDEAS[6].id },
+      { id:'c2', name:'Kofi', ideaId:IDEAS[5].id }
+    ],
+    notifications: [
+      { t:'Welcome to UNBUILT. HAWKSTRANGE is around if you need a hand.', s:'Just now' }
+    ]
+  };
+}
+function loadState(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    const base = defaultState();
+    return Object.assign(base, parsed);
+  }catch(e){ return defaultState(); }
+}
+let STATE = loadState();
+function saveState(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(STATE)); }catch(e){} }
+
+function addNotification(text){
+  STATE.notifications.unshift({ t:text, s:'Just now' });
+  STATE.notifications = STATE.notifications.slice(0,14);
+  saveState();
+  renderNotifications();
+}
+function renderNotifications(){
+  const el = document.getElementById('notifDropdown');
+  if(!el) return;
+  el.innerHTML = STATE.notifications.length ? STATE.notifications.map(function(n){
+    return '<div class="dropdown-item"><span class="t">'+n.t+'</span><span class="s">'+n.s+'</span></div>';
+  }).join('') : '<div class="dropdown-item"><span class="t">No notifications yet.</span></div>';
+}
+
+function isSaved(id){ return STATE.saved.indexOf(id) !== -1; }
+function toggleSave(id){
+  const idea = findIdea(id);
+  const i = STATE.saved.indexOf(id);
+  if(i === -1){ STATE.saved.push(id); showToast('Saved "'+idea.title+'" to your Workspace.'); addNotification('You saved "'+idea.title+'".'); }
+  else { STATE.saved.splice(i,1); showToast('Removed from your saved ideas.'); }
+  saveState();
+  return i === -1;
+}
+
+function recordBuildIntent(id, when){
+  const idea = findIdea(id);
+  const already = STATE.buildIntents[id];
+  const wasUnbuilt = idea.status === 'UNBUILT';
+  STATE.buildIntents[id] = when;
+  if(!already){ idea.builders += 1; }
+  if(idea.status === 'UNBUILT'){ idea.status = 'CLAIMED'; }
+  saveState();
+  if(wasUnbuilt){
+    showToast('🎉 Congratulations — you claimed "'+idea.title+'". It’s yours to build '+when.toLowerCase()+'.', true);
+    burstConfetti();
+  }else{
+    showToast('You want to build "'+idea.title+'" — '+when.toLowerCase()+'. Added to your Workspace.');
+  }
+  addNotification('You offered to build "'+idea.title+'" ('+when.toLowerCase()+').');
+  renderBuildTogether();
+  renderDiscovery();
+}
+
+function createRemix(id){
+  const original = findIdea(id);
+  const n = IDEAS.filter(function(i){ return i.id.indexOf(original.id+'R') === 0; }).length + 1;
+  const remix = Object.assign({}, original, {
+    id: original.id + 'R' + n,
+    title: 'Remix: ' + original.title,
+    status: 'UNBUILT', builders: 0, saves: 0, remixes: 0, hasRemix: false,
+    sections: ['trending'],
+    dna: Object.assign({}, original.dna, { creativity: Math.min(99, original.dna.creativity + 4) }),
+    remixOf: original.id
+  });
+  IDEAS.push(remix);
+  original.remixes += 1;
+  original.hasRemix = true;
+  STATE.remixIds.push(remix.id);
+  STATE.myIdeas.push(remix.id);
+  saveState();
+  showToast('Remix created — added to My Workspace.');
+  addNotification('You remixed "'+original.title+'".');
+  renderDiscovery();
+  renderWorkspace();
+  return remix.id;
+}
+
+function publishIdea(fields, dna){
+  const id = String(1000 + IDEAS.length + Math.floor(Math.random()*89));
+  const idea = {
+    id: id, title: fields.title || 'Untitled idea', category: 'AI',
+    tags: ['NEW'], problem: fields.problem || '—', who: fields.who || '—',
+    idea: fields.what || '—', why: fields.why || '—', vision: fields.what || '—',
+    needs: (fields.skills||'').split(',').map(function(s){return s.trim();}).filter(Boolean),
+    tech: [], skills: (fields.skills||'').split(',').map(function(s){return s.trim();}).filter(Boolean),
+    difficulty: 'Intermediate', time: '2–4 Weeks', team: 'Solo',
+    dna: dna, status: 'UNBUILT', builders: 0, saves: 0, remixes: 0, hasRemix: false,
+    sections: ['trending']
+  };
+  IDEAS.push(idea);
+  STATE.myIdeas.push(idea.id);
+  saveState();
+  addNotification('You published "'+idea.title+'".');
+  renderDiscovery();
+  renderWorkspace();
+  return idea.id;
+}
+
+function reviveIdea(id){
+  const idea = findIdea(id);
+  idea.status = 'CLAIMED';
+  idea.sections = ['needed'];
+  saveState();
+  showToast('"'+idea.title+'" revived — now CLAIMED and visible in Build Together.');
+  addNotification('You revived "'+idea.title+'" from the Graveyard.');
+  renderGraveyard();
+  renderBuildTogether();
+  renderDiscovery();
+}
+
+function computeBuildability(idea){
+  const teamFactor = { 'Solo':0, '2 people':4, '3–5 people':8, 'Open team':6 }[idea.team] || 0;
+  const raw = 100 - (idea.dna.difficulty*0.55) - (idea.dna.depth*0.15) + teamFactor + 10;
+  return Math.max(38, Math.min(97, Math.round(raw)));
+}
+function buildabilityNote(idea){
+  const teamNote = idea.team==='Solo' ? 'a solo builder' : (idea.team==='2 people' ? '1–2 developers' : (idea.team==='3–5 people' ? 'a small team of 3–5' : 'an open team'));
+  return 'Suitable for '+teamNote+'. Estimated build time: '+idea.time+'. Main difficulty: '+(idea.needs[0] || 'core implementation')+'.';
+}
+function mvpSplit(idea){
+  const items = idea.needs.concat(idea.tech).filter(function(v,i,a){ return v && a.indexOf(v)===i; });
+  if(!items.length) return { must:['Define the core feature'], nice:[], later:[] };
+  const mustN = Math.max(1, Math.ceil(items.length*0.4));
+  const niceN = Math.ceil(items.length*0.35);
+  return { must: items.slice(0,mustN), nice: items.slice(mustN,mustN+niceN), later: items.slice(mustN+niceN) };
+}
+function hashId(id){ let h=0; for(let i=0;i<id.length;i++){ h=(h*31+id.charCodeAt(i))>>>0; } return h; }
+function computeBuildScore(idea){
+  const h = hashId(idea.id);
+  function dim(shift, base){ return Math.max(58, Math.min(98, Math.round(base + ((h>>>shift) % 13) - 6))); }
+  const originality = dim(1, idea.dna.innovation);
+  const problemSolving = dim(3, idea.dna.impact);
+  const technicalDepth = dim(5, idea.dna.depth);
+  const ux = dim(7, 80);
+  const execution = dim(9, 84);
+  const documentation = dim(11, 76);
+  const overall = Math.round((originality+problemSolving+technicalDepth+ux+execution+documentation)/6);
+  return { originality, problemSolving, technicalDepth, ux, execution, documentation, overall };
+}
+function buildVerdict(scores, idea){
+  const dims = [['Originality',scores.originality],['Problem Solving',scores.problemSolving],['Technical Depth',scores.technicalDepth],['UX',scores.ux],['Execution',scores.execution],['Documentation',scores.documentation]];
+  dims.sort(function(a,b){ return b[1]-a[1]; });
+  const strongest = dims[0], weakest = dims[dims.length-1];
+  const context = idea.builtSummary ? (idea.builtSummary.slice(0,90).toLowerCase().replace(/\.$/,'')) : 'the core problem is genuinely solved';
+  return 'Strongest part: '+strongest[0]+' ('+strongest[1]+'). This project holds together because '+context+'… The weaker spot is '+weakest[0]+' ('+weakest[1]+') — that is what stands between this and an exceptional score, not a lack of ambition.';
+}
+function nextLevelSuggestions(scores){
+  const dims = [['Originality',scores.originality],['Problem Solving',scores.problemSolving],['Technical Depth',scores.technicalDepth],['UX',scores.ux],['Execution',scores.execution],['Documentation',scores.documentation]];
+  dims.sort(function(a,b){ return a[1]-b[1]; });
+  const copy = {
+    'Originality':'Push the concept one step further from the obvious version of this idea.',
+    'Problem Solving':'Sharpen exactly which part of the problem this solves versus works around.',
+    'Technical Depth':'Replace the simplest implementation with one that handles the real edge cases.',
+    'UX':'Cut one step out of the main flow — the fastest path should be the default path.',
+    'Execution':'Close the gap between the demo and something someone could actually rely on daily.',
+    'Documentation':'Write down the "why" behind the harder decisions, not just the "what".'
+  };
+  return dims.slice(0,3).map(function(d){ return { title:d[0], copy: copy[d[0]] }; });
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function $(sel,ctx){ return (ctx||document).querySelector(sel); }
+function $all(sel,ctx){ return Array.from((ctx||document).querySelectorAll(sel)); }
+function el(tag,cls,html){ const n=document.createElement(tag); if(cls) n.className=cls; if(html!==undefined) n.innerHTML=html; return n; }
+function findIdea(id){ return IDEAS.find(function(i){return i.id===id;}); }
+
+function showToast(msg, celebrate){
+  const wrap = $('#toastWrap');
+  const t = el('div', celebrate ? 'toast toast-celebrate' : 'toast', msg);
+  wrap.appendChild(t);
+  requestAnimationFrame(function(){ t.classList.add('is-visible'); });
+  setTimeout(function(){
+    t.classList.remove('is-visible');
+    setTimeout(function(){ t.remove(); }, 300);
+  }, celebrate ? 3400 : 2600);
+}
+function burstConfetti(){
+  if(REDUCE_MOTION) return;
+  const colors = ['#e7ab48','#8083e0','#8fbf8a','#f4efe3','#c97b6a'];
+  const cx = window.innerWidth/2;
+  const cy = 120;
+  for(let i=0;i<28;i++){
+    const p = document.createElement('span');
+    p.className = 'confetti-piece';
+    const x = (Math.random()*320 - 160);
+    const rot = (Math.random()*560 - 280);
+    p.style.setProperty('--x', x+'px');
+    p.style.setProperty('--rot', rot+'deg');
+    p.style.left = (cx + (Math.random()*60-30)) + 'px';
+    p.style.top = cy + 'px';
+    p.style.background = colors[i % colors.length];
+    p.style.animationDelay = (Math.random()*140)+'ms';
+    document.body.appendChild(p);
+    p.addEventListener('animationend', function(){ p.remove(); });
+  }
+}
+
+/* ============================================================
+   MODAL SYSTEM
+   ============================================================ */
+let lastFocused = null;
+function openOverlay(id){
+  const ov = document.getElementById(id);
+  if(!ov) return;
+  lastFocused = document.activeElement;
+  ov.classList.add('is-open');
+  ov.setAttribute('aria-hidden','false');
+  document.body.classList.add('modal-open');
+  const focusable = ov.querySelector('input,textarea,button,[tabindex]');
+  if(focusable) setTimeout(function(){ focusable.focus(); }, 60);
+}
+function closeOverlay(id){
+  const ov = document.getElementById(id);
+  if(!ov) return;
+  ov.classList.remove('is-open');
+  ov.setAttribute('aria-hidden','true');
+  document.body.classList.remove('modal-open');
+  if(lastFocused) lastFocused.focus();
+}
+$all('.overlay').forEach(function(ov){
+  ov.addEventListener('click', function(e){
+    if(e.target === ov) closeOverlay(ov.id);
+  });
+});
+$all('[data-close]').forEach(function(btn){
+  btn.addEventListener('click', function(){ closeOverlay(btn.getAttribute('data-close')); });
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    $all('.overlay.is-open').forEach(function(ov){ closeOverlay(ov.id); });
+  }
+});
+$all('[data-open-idea-builder]').forEach(function(b){ b.addEventListener('click', function(){ openIdeaBuilder(); }); });
+$all('[data-open-req-builder]').forEach(function(b){ b.addEventListener('click', function(){ openReqBuilder(); }); });
+
+/* ============================================================
+   NAV: search toggle, notifications, create menu, scrollspy
+   ============================================================ */
+const searchToggle = $('#searchToggle');
+const navSearchWrap = $('#navSearchWrap');
+searchToggle.addEventListener('click', function(){
+  const open = navSearchWrap.classList.toggle('is-open');
+  searchToggle.setAttribute('aria-expanded', open);
+  if(open) setTimeout(function(){ $('#navSearchInput').focus(); }, 200);
+});
+$('#navSearchInput').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') runSearch(e.target.value);
+});
+
+function closeAllPopovers(except){
+  ['notifDropdown','createMenu'].forEach(function(id){
+    if(id !== except) $('#'+id).classList.remove('is-open');
+  });
+}
+const notifToggle = $('#notifToggle');
+notifToggle.addEventListener('click', function(e){
+  e.stopPropagation();
+  const open = $('#notifDropdown').classList.toggle('is-open');
+  closeAllPopovers(open?'notifDropdown':null);
+  notifToggle.setAttribute('aria-expanded', open);
+});
+const createToggle = $('#createToggle');
+createToggle.addEventListener('click', function(e){
+  e.stopPropagation();
+  const open = $('#createMenu').classList.toggle('is-open');
+  closeAllPopovers(open?'createMenu':null);
+  createToggle.setAttribute('aria-expanded', open);
+});
+document.addEventListener('click', function(){ closeAllPopovers(null); });
+$('#profileBtn').addEventListener('click', function(){
+  document.getElementById('workspace').scrollIntoView({behavior: REDUCE_MOTION?'auto':'smooth'});
+});
+
+const navLinks = $all('[data-nav]');
+const spySections = navLinks.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+if('IntersectionObserver' in window){
+  const spy = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        const id = '#'+entry.target.id;
+        navLinks.forEach(function(a){ a.classList.toggle('is-active', a.getAttribute('href')===id); });
+      }
+    });
+  }, { rootMargin:'-40% 0px -55% 0px' });
+  spySections.forEach(function(s){ spy.observe(s); });
+}
+
+/* ============================================================
+   IDEA CARD RENDERING
+   ============================================================ */
+function dnaRowsHTML(dna){
+  const rows = [['Innovation',dna.innovation],['Technical Depth',dna.depth],['Real-world Impact',dna.impact],['Difficulty',dna.difficulty],['Creativity',dna.creativity]];
+  return rows.map(function(r){
+    return '<div class="dna-row"><span class="label">'+r[0]+'</span><span class="track"><span class="fill" style="width:'+r[1]+'%"></span></span><span class="val">'+r[1]+'</span></div>';
+  }).join('');
+}
+
+function ideaCardHTML(idea, reason){
+  const saved = isSaved(idea.id);
+  return (
+  '<article class="idea-card" data-idea="'+idea.id+'" tabindex="0" role="button" aria-label="Open idea: '+idea.title+'">'+
+    '<div class="idea-card-top"><span class="idea-id mono">UNBUILT / '+idea.id+'</span>'+
+      '<span class="status-badge" data-status="'+idea.status+'"><span class="pulse"></span>'+idea.status+'</span></div>'+
+    '<h3>'+idea.title+'</h3>'+
+    '<p class="problem">'+idea.problem+'</p>'+
+    (reason ? '<p class="match-reason">Matches your brief — '+reason+'</p>' : '') +
+    '<div class="tags">'+idea.tags.map(function(t){return '<span class="tag">'+t+'</span>';}).join('')+'</div>'+
+    '<div class="meta-row"><span><b>'+idea.difficulty+'</b></span><span><b>'+idea.time+'</b></span><span><b>'+idea.team+'</b></span></div>'+
+    '<div class="idea-card-actions">'+
+      '<button class="btn btn-outline btn-sm" data-idea-action="explore" data-idea="'+idea.id+'">Explore</button>'+
+      '<button class="btn btn-primary btn-sm" data-idea-action="build" data-idea="'+idea.id+'">I Can Build This</button>'+
+      '<button class="icon-btn btn-sm save-toggle" data-idea-action="save" data-idea="'+idea.id+'" aria-pressed="'+saved+'" aria-label="Save idea" title="Save">'+
+        '<svg viewBox="0 0 24 24" fill="'+(saved?'currentColor':'none')+'" stroke="currentColor" stroke-width="1.6" width="16" height="16"><path d="M6 3h12v18l-6-4-6 4z"/></svg>'+
+      '</button>'+
+    '</div>'+
+  '</article>'
+  );
+}
+
+function bindCardEvents(container){
+  $all('.idea-card', container).forEach(function(card){
+    card.addEventListener('click', function(e){
+      if(e.target.closest('[data-idea-action]')) return;
+      openIdeaDetail(card.getAttribute('data-idea'));
+    });
+    card.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openIdeaDetail(card.getAttribute('data-idea')); }
+    });
+  });
+  $all('[data-idea-action="explore"]', container).forEach(function(b){
+    b.addEventListener('click', function(e){ e.stopPropagation(); openIdeaDetail(b.getAttribute('data-idea')); });
+  });
+  $all('[data-idea-action="build"]', container).forEach(function(b){
+    b.addEventListener('click', function(e){ e.stopPropagation(); openIdeaDetail(b.getAttribute('data-idea'), true); });
+  });
+  $all('[data-idea-action="save"]', container).forEach(function(b){
+    b.addEventListener('click', function(e){
+      e.stopPropagation();
+      const on = toggleSave(b.getAttribute('data-idea'));
+      b.setAttribute('aria-pressed', on);
+      b.querySelector('svg').setAttribute('fill', on ? 'currentColor' : 'none');
+    });
+  });
+}
+
+/* discovery grid */
+let activeTab = 'trending';
+function renderDiscovery(){
+  const grid = $('#discoveryGrid');
+  const list = IDEAS.filter(function(i){ return i.sections.indexOf(activeTab) !== -1; });
+  grid.innerHTML = list.map(function(i){ return ideaCardHTML(i); }).join('');
+  bindCardEvents(grid);
+  $('#discoveryNote').textContent = list.length + ' ideas · ' + DISCOVERY_TABS.find(function(t){return t.key===activeTab;}).label.toLowerCase();
+}
+const tabsEl = $('#discoveryTabs');
+tabsEl.innerHTML = DISCOVERY_TABS.map(function(t){
+  return '<button class="tab-btn'+(t.key===activeTab?' is-active':'')+'" data-tab="'+t.key+'" role="tab" aria-selected="'+(t.key===activeTab)+'">'+t.label+'</button>';
+}).join('');
+tabsEl.addEventListener('click', function(e){
+  const btn = e.target.closest('[data-tab]');
+  if(!btn) return;
+  activeTab = btn.getAttribute('data-tab');
+  $all('.tab-btn', tabsEl).forEach(function(b){
+    const on = b === btn;
+    b.classList.toggle('is-active', on);
+    b.setAttribute('aria-selected', on);
+  });
+  renderDiscovery();
+});
+renderDiscovery();
+
+function runSearch(query){
+  query = (query||'').trim().toLowerCase();
+  if(!query) return;
+  const matches = IDEAS.filter(function(i){
+    return i.title.toLowerCase().indexOf(query)!==-1 ||
+      i.tags.join(' ').toLowerCase().indexOf(query)!==-1 ||
+      i.category.toLowerCase().indexOf(query)!==-1 ||
+      i.skills.join(' ').toLowerCase().indexOf(query)!==-1;
+  });
+  const grid = $('#discoveryGrid');
+  $all('.tab-btn', tabsEl).forEach(function(b){ b.classList.remove('is-active'); b.setAttribute('aria-selected','false'); });
+  $('#discoveryNote').textContent = matches.length + ' results for "' + query + '"';
+  grid.innerHTML = matches.length ? matches.map(function(i){return ideaCardHTML(i);}).join('') : '<p class="ws-empty">Nothing matched yet. Try a broader term, or start the idea yourself.</p>';
+  bindCardEvents(grid);
+  document.getElementById('ideas').scrollIntoView({behavior: REDUCE_MOTION?'auto':'smooth'});
+}
+$('#heroSearchBtn').addEventListener('click', function(){ runSearch($('#heroSearchInput').value); });
+$('#heroSearchInput').addEventListener('keydown', function(e){ if(e.key==='Enter') runSearch(e.target.value); });
+
+/* rotating hero placeholder */
+(function rotatePlaceholder(){
+  const input = $('#heroSearchInput');
+  let i = 0;
+  input.placeholder = HERO_PLACEHOLDERS[0];
+  if(REDUCE_MOTION) return;
+  setInterval(function(){
+    i = (i+1) % HERO_PLACEHOLDERS.length;
+    input.style.transition = 'opacity .2s';
+    input.style.opacity = 0;
+    setTimeout(function(){ input.placeholder = HERO_PLACEHOLDERS[i]; input.style.opacity = 1; }, 200);
+  }, 3200);
+})();
+
+/* loop marquee content (duplicated for seamless scroll) */
+(function buildLoop(){
+  const steps = ['IMAGINE','SHARE','DISCOVER','BUILD','COLLABORATE','REMIX','SHIP'];
+  const track = $('#loopTrack');
+  function group(){
+    return steps.map(function(s){ return '<span class="loop-item"><b>'+s+'</b><span class="arrow">→</span></span>'; }).join('');
+  }
+  track.innerHTML = group() + group();
+})();
+
+/* ============================================================
+   PROJECTS SECTION
+   ============================================================ */
+function renderProjects(){
+  const built = IDEAS.filter(function(i){ return i.status === 'BUILT'; });
+  $('#projectsList').innerHTML = built.map(function(p){
+    return (
+    '<article class="project-card">'+
+      '<div class="idea-card-top"><span class="idea-id mono">UNBUILT / '+p.id+' · BUILT</span>'+
+        '<div class="chip-row">'+p.tags.slice(0,2).map(function(t){return '<span class="tag">'+t+'</span>';}).join('')+'</div></div>'+
+      '<h3 style="font-size:24px;">'+p.title+'</h3>'+
+      '<div class="compare-grid">'+
+        '<div class="compare-col imagined"><div class="h mono">WHAT WAS IMAGINED</div><p>'+p.idea+'</p></div>'+
+        '<div class="compare-col built"><div class="h mono">WHAT WAS BUILT</div><p>'+p.builtSummary+'</p></div>'+
+      '</div>'+
+      '<div class="meta-row" style="border-top:1px solid var(--line);padding-top:16px;">'+
+        '<span>Contributors: <b>'+p.contributors.join(', ')+'</b></span></div>'+
+      '<div class="idea-card-actions"><button class="btn btn-outline btn-sm" data-open-detail="'+p.id+'">View full story</button></div>'+
+    '</article>'
+    );
+  }).join('');
+  $all('[data-open-detail]', $('#projectsList')).forEach(function(b){
+    b.addEventListener('click', function(){ openIdeaDetail(b.getAttribute('data-open-detail')); });
+  });
+}
+renderProjects();
+
+/* ============================================================
+   BUILD TOGETHER SECTION
+   ============================================================ */
+function renderBuildTogether(){
+  $('#contribLegend').innerHTML = CONTRIB_TYPES.map(function(c){ return '<span class="chip">'+c+'</span>'; }).join('');
+  const seeking = IDEAS.filter(function(i){ return i.status==='UNBUILT' || i.status==='CLAIMED'; });
+  const wrap = $('#seekingList');
+  wrap.innerHTML = seeking.map(function(i){
+    return (
+    '<div class="seek-row" data-seek="'+i.id+'">'+
+      '<div class="info"><h4>'+i.title+'</h4><p>'+i.skills.join(' · ')+' · '+i.time+' · '+i.team+'</p></div>'+
+      '<button class="btn btn-outline btn-sm" data-offer-toggle="'+i.id+'">Offer to Build</button>'+
+      '<div class="offer-form" id="offer-'+i.id+'">'+
+        '<div class="field"><label>What would you contribute?</label>'+
+          '<div class="chip-group">'+CONTRIB_TYPES.map(function(c){return '<span class="chip" data-pick>'+c+'</span>';}).join('')+'</div></div>'+
+        '<div class="field"><label>A short note to the creator</label><textarea placeholder="What excites you about this idea?"></textarea></div>'+
+        '<button class="btn btn-primary btn-sm" data-offer-submit="'+i.id+'" style="align-self:flex-start;">Send Offer</button>'+
+      '</div>'+
+    '</div>'
+    );
+  }).join('');
+  if(!wrap.dataset.bound){
+    wrap.dataset.bound = '1';
+    wrap.addEventListener('click', function(e){
+      const pick = e.target.closest('[data-pick]');
+      if(pick){ pick.classList.toggle('is-selected'); return; }
+      const toggle = e.target.closest('[data-offer-toggle]');
+      if(toggle){
+        const form = document.getElementById('offer-'+toggle.getAttribute('data-offer-toggle'));
+        form.classList.toggle('is-open');
+        return;
+      }
+      const submit = e.target.closest('[data-offer-submit]');
+      if(submit){
+        const ideaId = submit.getAttribute('data-offer-submit');
+        const idea = findIdea(ideaId);
+        const form = submit.closest('.offer-form');
+        recordBuildIntent(ideaId, 'NOW');
+        form.classList.remove('is-open');
+      }
+    });
+  }
+}
+renderBuildTogether();
+
+/* ============================================================
+   IDEA GRAVEYARD
+   ============================================================ */
+function renderGraveyard(){
+  const grid = $('#graveyardGrid');
+  const abandoned = IDEAS.filter(function(i){ return i.status === 'ABANDONED'; });
+  if(!abandoned.length){
+    grid.innerHTML = '<p class="ws-empty">Nothing in the graveyard right now — everything abandoned has been revived.</p>';
+    return;
+  }
+  grid.innerHTML = abandoned.map(function(i){
+    return (
+    '<div class="graveyard-card">'+
+      '<div class="idea-card-top"><span class="idea-id mono">UNBUILT / '+i.id+'</span>'+
+        '<span class="status-badge" data-status="ABANDONED"><span class="pulse"></span>ABANDONED</span></div>'+
+      '<h3 style="font-size:19px;">'+i.title+'</h3>'+
+      '<p class="reason">Why it stalled — '+i.abandonReason+'</p>'+
+      '<div class="tags">'+i.tags.map(function(t){return '<span class="tag">'+t+'</span>';}).join('')+'</div>'+
+      '<div class="idea-card-actions">'+
+        '<button class="btn btn-outline btn-sm" data-gy-open="'+i.id+'">Read Idea</button>'+
+        '<button class="btn btn-primary btn-sm" data-gy-revive="'+i.id+'">Revive This Idea</button>'+
+      '</div>'+
+    '</div>'
+    );
+  }).join('');
+  $all('[data-gy-open]', grid).forEach(function(b){ b.addEventListener('click', function(){ openIdeaDetail(b.getAttribute('data-gy-open')); }); });
+  $all('[data-gy-revive]', grid).forEach(function(b){ b.addEventListener('click', function(){ reviveIdea(b.getAttribute('data-gy-revive')); }); });
+}
+renderGraveyard();
+
+/* ============================================================
+   THE WALL
+   ============================================================ */
+(function renderWall(){
+  $('#wallColumns').innerHTML = WALL_POSTS.map(function(p,idx){
+    return (
+    '<div class="wall-post">'+
+      '<p class="quote">'+p.text+'</p>'+
+      '<div class="foot"><span class="tag">'+p.tag+'</span>'+
+      '<button class="btn btn-ghost btn-sm" data-wall-idx="'+idx+'">Turn into an idea →</button></div>'+
+    '</div>'
+    );
+  }).join('');
+  $('#wallColumns').addEventListener('click', function(e){
+    const b = e.target.closest('[data-wall-idx]');
+    if(!b) return;
+    const post = WALL_POSTS[+b.getAttribute('data-wall-idx')];
+    openIdeaBuilder(post.text);
+  });
+})();
+
+/* ============================================================
+   WORKSPACE
+   ============================================================ */
+function getWsTabs(){
+  return [
+    { key:'my', label:'My Ideas', items: STATE.myIdeas.map(findIdea).filter(Boolean) },
+    { key:'saved', label:'Saved', items: STATE.saved.map(findIdea).filter(Boolean) },
+    { key:'building', label:'Building', items: IDEAS.filter(function(i){return i.status==='BUILDING';}) },
+    { key:'projects', label:'My Projects', items: STATE.myIdeas.map(findIdea).filter(function(i){return i && i.status==='BUILT';}) },
+    { key:'remixes', label:'Remixes', items: IDEAS.filter(function(i){ return i.hasRemix || STATE.remixIds.indexOf(i.id)!==-1; }) },
+    { key:'collab', label:'Collaboration Requests', items:[] }
+  ];
+}
+let wsActive = 'my';
+function renderWorkspace(){
+  renderProfileStats();
+  renderWsTabs();
+  const list = $('#wsList');
+  const tab = getWsTabs().find(function(t){return t.key===wsActive;});
+  if(tab.key==='collab'){
+    if(!STATE.collabRequests.length){ list.innerHTML = '<div class="ws-empty">No pending collaboration requests.</div>'; return; }
+    list.innerHTML = STATE.collabRequests.map(function(r){
+      const idea = findIdea(r.ideaId);
+      return '<div class="ws-item"><span class="t">'+r.name+' wants to collaborate on "'+(idea?idea.title:'an idea')+'"</span>'+
+        '<span style="display:flex;gap:8px;"><button class="btn btn-primary btn-sm" data-ws-accept="'+r.id+'">Accept</button>'+
+        '<button class="btn btn-ghost btn-sm" data-ws-decline="'+r.id+'">Decline</button></span></div>';
+    }).join('');
+    $all('[data-ws-accept]', list).forEach(function(b){
+      b.addEventListener('click', function(){
+        const req = STATE.collabRequests.find(function(r){return r.id===b.getAttribute('data-ws-accept');});
+        if(req){
+          const idea = findIdea(req.ideaId);
+          if(idea) idea.builders += 1;
+          STATE.collabRequests = STATE.collabRequests.filter(function(r){return r.id!==req.id;});
+          saveState();
+          addNotification(req.name+' is now collaborating with you.');
+          showToast("Accepted " + req.name + "'s request.");
+          renderWorkspace();
+        }
+      });
+    });
+    $all('[data-ws-decline]', list).forEach(function(b){
+      b.addEventListener('click', function(){
+        STATE.collabRequests = STATE.collabRequests.filter(function(r){return r.id!==b.getAttribute('data-ws-decline');});
+        saveState();
+        showToast('Request declined.');
+        renderWorkspace();
+      });
+    });
+    return;
+  }
+  if(!tab.items.length){ list.innerHTML = '<div class="ws-empty">Nothing here yet.</div>'; return; }
+  list.innerHTML = tab.items.map(function(i){
+    return '<div class="ws-item" data-ws-open="'+i.id+'"><span class="t">'+i.title+'</span><span class="s">'+i.status+' · '+i.category+'</span></div>';
+  }).join('');
+  $all('[data-ws-open]', list).forEach(function(row){
+    row.addEventListener('click', function(){ openIdeaDetail(row.getAttribute('data-ws-open')); });
+  });
+}
+function renderProfileStats(){
+  const el = $('#profileStats');
+  if(!el) return;
+  const built = STATE.myIdeas.map(findIdea).filter(function(i){return i && i.status==='BUILT';}).length;
+  const remixed = IDEAS.filter(function(i){ return STATE.remixIds.indexOf(i.id)!==-1; }).length;
+  const collabs = Object.keys(STATE.buildIntents).length;
+  el.innerHTML =
+    '<div class="stat"><b>'+STATE.myIdeas.length+'</b><span>Ideas imagined</span></div>'+
+    '<div class="stat"><b>'+built+'</b><span>Projects built</span></div>'+
+    '<div class="stat"><b>'+remixed+'</b><span>Ideas remixed</span></div>'+
+    '<div class="stat"><b>'+collabs+'</b><span>Collaborations</span></div>';
+}
+function renderWsTabs(){
+  $('#wsTabs').innerHTML = getWsTabs().map(function(t){
+    return '<button class="tab-btn'+(t.key===wsActive?' is-active':'')+'" data-ws-tab="'+t.key+'">'+t.label+'</button>';
+  }).join('');
+}
+renderWsTabs();
+$('#wsTabs').addEventListener('click', function(e){
+  const btn = e.target.closest('[data-ws-tab]');
+  if(!btn) return;
+  wsActive = btn.getAttribute('data-ws-tab');
+  $all('.tab-btn', $('#wsTabs')).forEach(function(b){ b.classList.toggle('is-active', b===btn); });
+  renderWorkspace();
+});
+renderWorkspace();
+
+/* ============================================================
+   IDEA DETAIL MODAL
+   ============================================================ */
+function openIdeaDetail(ideaId, openIntent){
+  const idea = findIdea(ideaId);
+  if(!idea) return;
+
+  /* ---- Graveyard / abandoned ideas get their own simpler view ---- */
+  if(idea.status === 'ABANDONED'){
+    $('#ideaDetailContent').innerHTML = (
+      '<div class="modal-head"><div><span class="idea-id mono">UNBUILT / '+idea.id+'</span>'+
+        '<h3 id="ideaDetailTitle" style="margin-top:8px;font-size:27px;">'+idea.title+'</h3></div></div>'+
+      '<div class="modal-body">'+
+        '<div class="detail-section"><div class="h">Why It Hasn’t Been Built</div><p class="b" style="color:#c97b6a;">'+idea.abandonReason+'</p></div>'+
+        '<div class="detail-section"><div class="h">The Problem</div><p class="b">'+idea.problem+'</p></div>'+
+        '<div class="detail-section"><div class="h">The Idea</div><p class="b">'+idea.idea+'</p></div>'+
+        '<div class="detail-section"><div class="h">Why It Matters</div><p class="b">'+idea.why+'</p></div>'+
+        '<div class="detail-section"><div class="h">Required Skills</div><div class="chip-row">'+idea.skills.map(function(s){return '<span class="tag">'+s+'</span>';}).join('')+'</div></div>'+
+        '<div class="detail-section"><div class="h">Idea DNA</div><div class="dna-list">'+dnaRowsHTML(idea.dna)+'</div></div>'+
+        '<div class="idea-card-actions"><button class="btn btn-primary btn-sm" id="detailReviveBtn">Revive This Idea</button></div>'+
+      '</div>'
+    );
+    openOverlay('ideaDetailOverlay');
+    $('#detailReviveBtn').addEventListener('click', function(){ reviveIdea(idea.id); closeOverlay('ideaDetailOverlay'); });
+    return;
+  }
+
+  const stages = ['UNBUILT','CLAIMED','BUILDING','BUILT'];
+  const currentIdx = stages.indexOf(idea.status);
+  const trackHTML = stages.map(function(s,i){
+    let cls = 'node';
+    if(i < currentIdx) cls += ' passed';
+    if(i === currentIdx) cls += ' active';
+    return '<div class="'+cls+'"><div class="line"></div><div class="dot"></div><span>'+s+'</span></div>';
+  }).join('');
+
+  const remixChildren = IDEAS.filter(function(i){ return i.remixOf === idea.id; });
+  const evoHTML = (idea.hasRemix || remixChildren.length) ? (
+    '<div class="detail-section"><div class="h">Idea Evolution</div>'+
+    '<div class="evo-tree">'+
+      '<span class="evo-node origin">'+idea.title+'</span>'+
+      (remixChildren.length ? remixChildren.map(function(r){ return '<span class="evo-arrow">→</span><span class="evo-node" data-evo-open="'+r.id+'" style="cursor:pointer;">'+r.title.replace('Remix: ','')+'</span>'; }).join('') :
+        '<span class="evo-arrow">→</span><span class="evo-node built">Remixed elsewhere</span>')+
+    '</div></div>'
+  ) : '';
+
+  const buildability = computeBuildability(idea);
+  const mvp = mvpSplit(idea);
+  const buildabilityHTML =
+    '<div class="detail-section"><div class="h">Buildability Score</div>'+
+      '<div class="score-panel"><div class="score-num">'+buildability+'<small>% buildable</small></div>'+
+      '<div class="score-copy">'+buildabilityNote(idea)+' <br><span style="color:var(--ink-faint);">This score is a guide, not a guarantee.</span></div></div>'+
+    '</div>'+
+    '<details class="disclosure detail-section"><summary>Make This Buildable — MVP Cutter</summary>'+
+      '<p class="b" style="margin-bottom:10px;">Your first version doesn’t need everything.</p>'+
+      '<div class="mvp-grid">'+
+        '<div class="mvp-col"><h5>Must Have</h5><ul>'+mvp.must.map(function(m){return '<li>'+m+'</li>';}).join('')+'</ul></div>'+
+        '<div class="mvp-col"><h5>Nice to Have</h5><ul>'+(mvp.nice.length?mvp.nice.map(function(m){return '<li>'+m+'</li>';}).join(''):'<li>—</li>')+'</ul></div>'+
+        '<div class="mvp-col"><h5>Later</h5><ul>'+(mvp.later.length?mvp.later.map(function(m){return '<li>'+m+'</li>';}).join(''):'<li>—</li>')+'</ul></div>'+
+      '</div>'+
+    '</details>';
+
+  let buildScoreHTML = '';
+  if(idea.status === 'BUILT'){
+    const scores = computeBuildScore(idea);
+    const verdict = buildVerdict(scores, idea);
+    const next = nextLevelSuggestions(scores);
+    buildScoreHTML =
+      '<div class="detail-section"><div class="h">Developer Rating AI — Build Score</div>'+
+        '<div class="score-panel"><div class="score-num">'+scores.overall+'<small>/ 100</small></div>'+
+          '<div class="score-copy"><div class="subscore-grid">'+
+            [['Originality',scores.originality],['Problem Solving',scores.problemSolving],['Technical Depth',scores.technicalDepth],['UX',scores.ux],['Execution',scores.execution],['Documentation',scores.documentation]]
+              .map(function(d){ return '<span>'+d[0]+'</span><span class="mono">'+d[1]+'</span>'; }).join('')+
+          '</div></div></div>'+
+        '<p class="b" style="margin-top:12px;"><b style="color:var(--ink);">AI Verdict —</b> '+verdict+'</p>'+
+      '</div>'+
+      '<div class="detail-section"><div class="h">Next Level — Reach 95+</div><ul class="next-level">'+
+        next.map(function(n,i){ return '<li><b>0'+(i+1)+'. '+n.title+'</b> — '+n.copy+'</li>'; }).join('')+
+      '</ul></div>';
+  }
+
+  $('#ideaDetailContent').innerHTML = (
+    '<div class="modal-head"><div><span class="idea-id mono">UNBUILT / '+idea.id+'</span>'+
+      '<h3 id="ideaDetailTitle" style="margin-top:8px;font-size:27px;">'+idea.title+'</h3></div></div>'+
+    '<div class="status-track">'+trackHTML+'</div>'+
+    '<div class="modal-body">'+
+      '<div class="detail-section"><div class="h">The Problem</div><p class="b">'+idea.problem+'</p></div>'+
+      '<div class="detail-section"><div class="h">Who Has This Problem</div><p class="b">'+idea.who+'</p></div>'+
+      '<div class="detail-section"><div class="h">The Idea</div><p class="b">'+idea.idea+'</p></div>'+
+      '<div class="detail-section"><div class="h">Why It Matters</div><p class="b">'+idea.why+'</p></div>'+
+      '<div class="detail-section"><div class="h">Creator’s Vision</div><p class="b">“'+idea.vision+'”</p></div>'+
+      '<div class="detail-section"><div class="h">What It Would Need</div><div class="chip-row">'+idea.needs.map(function(n){return '<span class="chip">'+n+'</span>';}).join('')+'</div></div>'+
+      '<div class="detail-section"><div class="h">Possible Technologies</div><div class="chip-row">'+idea.tech.map(function(t){return '<span class="tag">'+t+'</span>';}).join('')+'</div></div>'+
+      '<div class="detail-section"><div class="h">Required Skills</div><div class="chip-row">'+idea.skills.map(function(s){return '<span class="tag">'+s+'</span>';}).join('')+'</div></div>'+
+      '<div class="detail-section"><div class="h">Idea DNA</div><div class="dna-list">'+dnaRowsHTML(idea.dna)+'</div></div>'+
+      buildabilityHTML +
+      evoHTML +
+      buildScoreHTML +
+      '<div class="meta-row" style="border-top:1px solid var(--line);padding-top:16px;">'+
+        '<span><b>'+idea.builders+'</b> interested builders</span><span><b>'+idea.saves+'</b> saves</span><span><b>'+idea.remixes+'</b> remixes</span></div>'+
+      '<div class="idea-card-actions" style="flex-wrap:wrap;">'+
+        '<button class="btn btn-primary btn-sm" id="detailBuildBtn">I Want to Build This</button>'+
+        '<button class="btn btn-outline btn-sm" id="detailRemixBtn">Remix</button>'+
+        '<button class="btn btn-outline btn-sm save-toggle" id="detailSaveBtn" aria-pressed="'+isSaved(idea.id)+'">'+(isSaved(idea.id)?'Saved ✓':'Save')+'</button>'+
+        '<button class="btn btn-outline btn-sm" id="detailShareBtn">Share</button>'+
+      '</div>'+
+      '<div class="intent-menu" id="intentMenu">'+
+        '<button data-intent="NOW">Now</button><button data-intent="THIS WEEK">This week</button><button data-intent="SOMEDAY">Someday</button>'+
+      '</div>'+
+      (STATE.buildIntents[idea.id] ? '<p class="intent-note">You want to build this — '+STATE.buildIntents[idea.id].toLowerCase()+'.</p>' : '') +
+    '</div>'
+  );
+  openOverlay('ideaDetailOverlay');
+
+  $all('[data-evo-open]').forEach(function(n){ n.addEventListener('click', function(){ openIdeaDetail(n.getAttribute('data-evo-open')); }); });
+
+  const intentMenu = $('#intentMenu');
+  $('#detailBuildBtn').addEventListener('click', function(){ intentMenu.classList.toggle('is-open'); });
+  $all('[data-intent]', intentMenu).forEach(function(b){
+    b.addEventListener('click', function(){
+      recordBuildIntent(idea.id, b.getAttribute('data-intent'));
+      intentMenu.classList.remove('is-open');
+      openIdeaDetail(idea.id);
+    });
+  });
+  if(openIntent) intentMenu.classList.add('is-open');
+
+  $('#detailRemixBtn').addEventListener('click', function(){
+    const newId = createRemix(idea.id);
+    closeOverlay('ideaDetailOverlay');
+    setTimeout(function(){ openIdeaDetail(newId); }, 260);
+  });
+  $('#detailSaveBtn').addEventListener('click', function(e){
+    const on = toggleSave(idea.id);
+    e.target.setAttribute('aria-pressed', on);
+    e.target.textContent = on ? 'Saved ✓' : 'Save';
+  });
+  $('#detailShareBtn').addEventListener('click', function(){
+    const link = 'https://unbuilt.app/idea/'+idea.id;
+    if(navigator.clipboard){ navigator.clipboard.writeText(link).catch(function(){}); }
+    showToast('Link copied to clipboard.');
+  });
+}
+
+/* ============================================================
+   REQUIREMENT BUILDER WIZARD  ("I need an idea")
+   ============================================================ */
+const REQ_STEPS = [
+  { key:'type', title:'What are you looking for?', multi:false, options:['Website','Web App','Mobile App','Desktop App','Game','AI / ML','Developer Tool','Automation','Creative Tool','Open Source'] },
+  { key:'purpose', title:'What’s it for?', multi:false, options:['Competition','Hackathon','Portfolio','Learning','Real-world problem','Startup experiment','Open Source','College project'] },
+  { key:'domain', title:'Pick a problem domain', multi:true, options:['Education','Finance','Healthcare','Accessibility','Environment','Community','Developer Experience','Daily Life'] },
+  { key:'difficulty', title:'How difficult should it be?', multi:false, options:['Beginner','Intermediate','Advanced','Extreme'] },
+  { key:'time', title:'How much time do you have?', multi:false, options:['Weekend','1 Week','2–4 Weeks','1–3 Months'] },
+  { key:'team', title:'Who’s building it?', multi:false, options:['Solo','2 people','3–5 people','Open team'] }
+];
+const reqState = { step:0, answers:{}, unusual:false };
+
+const CATEGORY_TO_DOMAIN = {
+  'AI':['Developer Experience','Daily Life'], 'EDUCATION':['Education'], 'HARDWARE':['Environment','Daily Life'],
+  'CLIMATE':['Environment','Healthcare'], 'HEALTH':['Healthcare'], 'FINANCE':['Finance'], 'GAMES':['Daily Life'],
+  'ACCESSIBILITY':['Accessibility'], 'DEV TOOLS':['Developer Experience'], 'PRODUCTIVITY':['Daily Life'], 'COMMUNITY':['Community']
+};
+
+function reqReset(){ reqState.step = 0; reqState.answers = {}; reqState.unusual = false; renderReqStep(); }
+function openReqBuilder(){ reqReset(); openOverlay('reqOverlay'); miloSay("Tell me what you know, how much time you have, and how difficult you want the challenge to be."); }
+
+function renderReqProgress(){
+  const total = REQ_STEPS.length + 1;
+  const done = Math.min(reqState.step, total-1);
+  $('#reqProgress').innerHTML = Array.from({length: total}).map(function(_,i){
+    return '<span class="seg'+(i<=done?' done':'')+'"></span>';
+  }).join('');
+}
+
+function renderReqStep(){
+  renderReqProgress();
+  const body = $('#reqBody');
+  if(reqState.step < REQ_STEPS.length){
+    const step = REQ_STEPS[reqState.step];
+    const chosen = reqState.answers[step.key] || (step.multi ? [] : null);
+    body.innerHTML = (
+      '<p class="wizard-step-label">STEP '+(reqState.step+1)+' OF '+(REQ_STEPS.length+1)+'</p>'+
+      '<h3 style="font-size:22px;">'+step.title+'</h3>'+
+      '<div class="chip-group" id="reqOptions">'+step.options.map(function(o){
+        const sel = step.multi ? chosen.indexOf(o)!==-1 : chosen===o;
+        return '<button type="button" class="chip'+(sel?' is-selected':'')+'" data-opt="'+o+'">'+o+'</button>';
+      }).join('')+'</div>'+
+      '<label style="display:flex;align-items:center;gap:10px;margin-top:6px;font-size:13.5px;color:var(--ink-dim);cursor:pointer;">'+
+        '<input type="checkbox" id="reqUnusual" '+(reqState.unusual?'checked':'')+' style="width:16px;height:16px;"> I want something unusual'+
+      '</label>'+
+      '<div class="wizard-nav">'+
+        '<button class="btn btn-ghost" id="reqBack" '+(reqState.step===0?'disabled':'')+'>Back</button>'+
+        '<button class="btn btn-primary" id="reqNext">Continue</button>'+
+      '</div>'
+    );
+    $all('[data-opt]', body).forEach(function(b){
+      b.addEventListener('click', function(){
+        const val = b.getAttribute('data-opt');
+        if(step.multi){
+          const arr = reqState.answers[step.key] || [];
+          const i = arr.indexOf(val);
+          if(i===-1) arr.push(val); else arr.splice(i,1);
+          reqState.answers[step.key] = arr;
+        } else {
+          reqState.answers[step.key] = val;
+        }
+        renderReqStep();
+      });
+    });
+    $('#reqUnusual').addEventListener('change', function(e){ reqState.unusual = e.target.checked; });
+    $('#reqBack').addEventListener('click', function(){ if(reqState.step>0){ reqState.step--; renderReqStep(); } });
+    $('#reqNext').addEventListener('click', function(){ reqState.step++; renderReqStep(); });
+  } else {
+    const matches = computeReqMatches();
+    body.innerHTML = (
+      '<p class="wizard-step-label">RESULTS</p>'+
+      '<h3 style="font-size:22px;">Worth building →</h3>'+
+      '<p class="modal-sub">'+matches.length+' ideas fit what you told us'+(reqState.unusual?' — leaning unusual.':'.')+'</p>'+
+      '<div class="card-grid" id="reqResultsGrid" style="margin-top:8px;"></div>'+
+      '<div class="wizard-nav"><button class="btn btn-ghost" id="reqBack2">Back</button>'+
+      '<button class="btn btn-outline" id="reqRestart">Start Over</button></div>'
+    );
+    const grid = $('#reqResultsGrid');
+    grid.innerHTML = matches.map(function(i){ return ideaCardHTML(i, reqMatchReason(i)); }).join('');
+    bindCardEvents(grid);
+    $('#reqBack2').addEventListener('click', function(){ reqState.step--; renderReqStep(); });
+    $('#reqRestart').addEventListener('click', reqReset);
+  }
+}
+
+function reqMatchReason(idea){
+  const bits = [];
+  if(reqState.answers.difficulty) bits.push(reqState.answers.difficulty.toLowerCase()+' difficulty');
+  if(reqState.answers.time) bits.push(reqState.answers.time.toLowerCase());
+  if(reqState.answers.team) bits.push(reqState.answers.team.toLowerCase());
+  return bits.join(', ') || idea.category.toLowerCase();
+}
+
+function computeReqMatches(){
+  if(reqState.unusual){
+    return IDEAS.filter(function(i){ return i.sections.indexOf('unusual')!==-1; });
+  }
+  const domains = reqState.answers.domain || [];
+  const difficulty = reqState.answers.difficulty;
+  let list = IDEAS.filter(function(i){
+    const domainMatch = !domains.length || domains.some(function(d){ return (CATEGORY_TO_DOMAIN[i.category]||[]).indexOf(d)!==-1; });
+    const diffMatch = !difficulty || i.difficulty === difficulty;
+    return domainMatch && diffMatch;
+  });
+  if(!list.length) list = IDEAS.filter(function(i){ return !difficulty || i.difficulty === difficulty; });
+  if(!list.length) list = IDEAS.slice(0,6);
+  return list.slice(0,6);
+}
+
+/*
+   IDEA BUILDER WIZARD  ("I have an idea")*/
+const IB_STEPS = [
+  { key:'problem', q:'What problem did you notice?', ph:'e.g. Nobody tells you which browser tab you actually meant to keep open.' },
+  { key:'who', q:'Who experiences this problem?', ph:'Who deals with this the most?' },
+  { key:'what', q:'What do you imagine should exist?', ph:'Describe the thing that would fix it.' },
+  { key:'why', q:'Why does it matter?', ph:'What happens if nobody builds this?' },
+  { key:'solution', q:'What would the solution roughly do?', ph:'Walk through it in plain language.' },
+  { key:'skills', q:'What skills or resources might it need?', ph:'e.g. AI, a mobile app, some hardware…' },
+  { key:'part', q:'What part could you build yourself?', ph:'Even a small piece counts.' }
+];
+const ibState = { step:0, answers:{} };
+
+function ibReset(prefill){
+  ibState.step = 0;
+  ibState.answers = {};
+  if(prefill) ibState.answers.problem = prefill;
+  renderIbStep();
+}
+function openIdeaBuilder(prefill){
+  ibReset(prefill);
+  openOverlay('ideaBuilderOverlay');
+  miloSay("There's something interesting hiding inside this idea. Let's shape it.");
+}
+
+function renderIbProgress(){
+  const total = IB_STEPS.length + 1;
+  const done = Math.min(ibState.step, total-1);
+  $('#ibProgress').innerHTML = Array.from({length: total}).map(function(_,i){
+    return '<span class="seg'+(i<=done?' done':'')+'"></span>';
+  }).join('');
+}
+
+function renderIbStep(){
+  renderIbProgress();
+  const body = $('#ibBody');
+  if(ibState.step < IB_STEPS.length){
+    const step = IB_STEPS[ibState.step];
+    body.innerHTML = (
+      '<p class="wizard-step-label">STEP '+(ibState.step+1)+' OF '+(IB_STEPS.length+1)+'</p>'+
+      '<div class="field"><label>'+step.q+'</label>'+
+        '<textarea id="ibInput" placeholder="'+step.ph+'">'+(ibState.answers[step.key]||'')+'</textarea></div>'+
+      '<div class="wizard-nav">'+
+        '<button class="btn btn-ghost" id="ibBack" '+(ibState.step===0?'disabled':'')+'>Back</button>'+
+        '<button class="btn btn-primary" id="ibNext">'+(ibState.step===IB_STEPS.length-1?'Shape My Idea':'Continue')+'</button>'+
+      '</div>'
+    );
+    $('#ibInput').focus();
+    $('#ibNext').addEventListener('click', function(){
+      ibState.answers[step.key] = $('#ibInput').value.trim();
+      ibState.step++;
+      renderIbStep();
+    });
+    $('#ibBack').addEventListener('click', function(){ if(ibState.step>0){ ibState.answers[step.key] = $('#ibInput').value.trim(); ibState.step--; renderIbStep(); } });
+  } else {
+    const a = ibState.answers;
+    const title = (a.what || a.problem || 'Your unbuilt idea').split(/[.!?]/)[0].split(' ').slice(0,8).join(' ');
+    function pseudoScore(seed, base){
+      let h = 0;
+      for(let i=0;i<seed.length;i++) h = (h*31 + seed.charCodeAt(i)) % 997;
+      return Math.max(55, Math.min(98, base + (h % 30) - 12));
+    }
+    const dna = {
+      innovation: pseudoScore((a.what||'')+'i', 78),
+      depth: pseudoScore((a.skills||'')+'d', 68),
+      impact: pseudoScore((a.why||'')+'m', 80),
+      difficulty: pseudoScore((a.solution||'')+'x', 70),
+      creativity: pseudoScore((a.problem||'')+'c', 82)
+    };
+    body.innerHTML = (
+      '<p class="wizard-step-label">PREVIEW</p>'+
+      '<div class="milo-panel" style="position:static;opacity:1;transform:none;pointer-events:auto;margin-bottom:4px;">'+
+        '<div class="row"><svg viewBox="0 0 60 60" fill="none"><ellipse cx="30" cy="34" rx="16" ry="18" fill="#cfe8e0"/><ellipse cx="22" cy="30" rx="5.4" ry="7" fill="#0b0b0e"/><ellipse cx="38" cy="30" rx="5.4" ry="7" fill="#0b0b0e"/></svg>'+
+        '<div><div class="label">HAWKSTRANGE</div><p>There’s something interesting hiding inside this idea. Here’s the structured version. Your original thought is still right here too.</p></div></div>'+
+      '</div>'+
+      '<h3 style="font-size:22px;">'+(title || 'Untitled idea')+'</h3>'+
+      '<div class="detail-section"><div class="h">Original Thought</div><p class="b" style="font-style:italic;">“'+(a.what||a.problem||'—')+'”</p></div>'+
+      '<div class="detail-section"><div class="h">The Problem</div><p class="b">'+(a.problem||'—')+'</p></div>'+
+      '<div class="detail-section"><div class="h">Who Has This Problem</div><p class="b">'+(a.who||'—')+'</p></div>'+
+      '<div class="detail-section"><div class="h">The Idea</div><p class="b">'+(a.what||'—')+'</p></div>'+
+      '<div class="detail-section"><div class="h">Why It Matters</div><p class="b">'+(a.why||'—')+'</p></div>'+
+      '<div class="detail-section"><div class="h">What It Would Need</div><p class="b">'+(a.skills||'—')+'</p></div>'+
+      '<div class="detail-section"><div class="h">What You Could Build</div><p class="b">'+(a.part||'—')+'</p></div>'+
+      '<div class="detail-section"><div class="h">Idea DNA</div><div class="dna-list">'+dnaRowsHTML(dna)+'</div></div>'+
+      '<div class="wizard-nav">'+
+        '<button class="btn btn-ghost" id="ibBack2">Back</button>'+
+        '<button class="btn btn-primary" id="ibPublish">Publish Idea</button>'+
+      '</div>'
+    );
+    $('#ibBack2').addEventListener('click', function(){ ibState.step--; renderIbStep(); });
+    $('#ibPublish').addEventListener('click', function(){
+      const newId = publishIdea({ title:title, problem:a.problem, who:a.who, what:a.what, why:a.why, skills:a.skills }, dna);
+      showToast('Published to Discover as UNBUILT / '+newId+'.');
+      closeOverlay('ideaBuilderOverlay');
+      setTimeout(function(){ openIdeaDetail(newId); }, 260);
+    });
+  }
+}
+
+  /* MILO*/
+renderNotifications();
+const miloBtn = $('#miloBtn');
+const miloPanel = $('#miloPanel');
+function miloSay(text){
+  $('#miloText').textContent = text;
+  miloPanel.classList.add('is-open');
+  miloBtn.setAttribute('aria-expanded','true');
+}
+miloBtn.addEventListener('click', function(){
+  const open = miloPanel.classList.toggle('is-open');
+  miloBtn.setAttribute('aria-expanded', open);
+});
+if('IntersectionObserver' in window){
+  let wallGreeted = false;
+  const wallSpy = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting && !wallGreeted){
+        wallGreeted = true;
+        miloSay("Thoughts don't need to be finished to be worth posting. Try one.");
+      }
+    });
+  }, { threshold:0.4 });
+  const wallSection = document.getElementById('wall');
+  if(wallSection) wallSpy.observe(wallSection);
+}
+
+  /* IDEA UNIVERSE — hero canvas */
+(function ideaUniverse(){
+  const canvas = document.getElementById('universeCanvas');
+  const heroEl = document.getElementById('discover');
+  const ctx = canvas.getContext('2d');
+  const tooltip = document.getElementById('nodeTooltip');
+  let w=0,h=0,dpr=Math.min(window.devicePixelRatio||1,2);
+  let nodes = [];
+  let mouse = { x:-9999, y:-9999, active:false };
+  let hovered = null;
+  let rafId = null;
+
+  function resize(){
+    w = heroEl.clientWidth; h = heroEl.clientHeight;
+    canvas.width = w*dpr; canvas.height = h*dpr;
+    canvas.style.width = w+'px'; canvas.style.height = h+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    buildNodes();
+  }
+
+  function buildNodes(){
+    const count = Math.max(36, Math.min(90, Math.floor(w/16)));
+    nodes = [];
+    const cx = w/2, cy = h/2;
+    for(let i=0;i<count;i++){
+      const catIndex = i % CATEGORIES.length;
+      const angle = (catIndex / CATEGORIES.length) * Math.PI*2;
+      const clusterR = Math.min(w,h)*0.34;
+      const anchorX = cx + Math.cos(angle)*clusterR;
+      const anchorY = cy + Math.sin(angle)*clusterR*0.62;
+      nodes.push({
+        x: anchorX + (Math.random()-0.5)*90,
+        y: anchorY + (Math.random()-0.5)*90,
+        vx: (Math.random()-0.5)*0.15,
+        vy: (Math.random()-0.5)*0.15,
+        r: 1.4 + Math.random()*1.8,
+        category: CATEGORIES[catIndex],
+        anchorX: anchorX, anchorY: anchorY,
+        ideaId: i < IDEAS.length ? IDEAS[i].id : null
+      });
+    }
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    // update
+    nodes.forEach(function(n){
+      n.vx += (n.anchorX - n.x) * 0.00025;
+      n.vy += (n.anchorY - n.y) * 0.00025;
+      if(mouse.active){
+        const dx = n.x - mouse.x, dy = n.y - mouse.y;
+        const d2 = dx*dx + dy*dy;
+        if(d2 < 120*120){
+          const d = Math.sqrt(d2)||1;
+          n.vx += (dx/d) * 0.03;
+          n.vy += (dy/d) * 0.03;
+        }
+      }
+      n.vx *= 0.96; n.vy *= 0.96;
+      n.x += n.vx; n.y += n.vy;
+    });
+    // connections
+    ctx.lineWidth = 1;
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const a = nodes[i], b = nodes[j];
+        const dx=a.x-b.x, dy=a.y-b.y;
+        const dist = Math.sqrt(dx*dx+dy*dy);
+        if(dist < 110){
+          const op = (1 - dist/110) * 0.14;
+          ctx.strokeStyle = 'rgba(244,239,227,'+op+')';
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      }
+    }
+    // nodes
+    nodes.forEach(function(n){
+      const isHover = hovered === n;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, isHover ? n.r*2.4 : n.r, 0, Math.PI*2);
+      ctx.fillStyle = isHover ? 'rgba(231,171,72,0.95)' : 'rgba(244,239,227,0.55)';
+      ctx.fill();
+      if(isHover){
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r*6, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(231,171,72,0.08)';
+        ctx.fill();
+      }
+    });
+    if(!REDUCE_MOTION){ rafId = requestAnimationFrame(draw); }
+  }
+
+  function findNearest(x,y){
+    let best=null, bd=22*22;
+    nodes.forEach(function(n){
+      const dx=n.x-x, dy=n.y-y, d2=dx*dx+dy*dy;
+      if(d2<bd){ bd=d2; best=n; }
+    });
+    return best;
+  }
+
+  heroEl.addEventListener('mousemove', function(e){
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left; mouse.y = e.clientY - rect.top; mouse.active = true;
+    const near = findNearest(mouse.x, mouse.y);
+    if(near !== hovered){
+      hovered = near;
+      if(near && near.ideaId){
+        const idea = findIdea(near.ideaId);
+        tooltip.querySelector('.c').textContent = near.category;
+        tooltip.querySelector('.t').textContent = idea ? idea.title : near.category;
+        tooltip.style.opacity = 1;
+      } else if(near){
+        tooltip.querySelector('.c').textContent = near.category;
+        tooltip.querySelector('.t').textContent = 'An idea is forming here…';
+        tooltip.style.opacity = 1;
+      } else {
+        tooltip.style.opacity = 0;
+      }
+    }
+    if(hovered){
+      tooltip.style.left = (e.clientX + 16) + 'px';
+      tooltip.style.top = (e.clientY + 16) + 'px';
+    }
+    if(!REDUCE_MOTION && !rafId){ draw(); }
+  });
+  heroEl.addEventListener('mouseleave', function(){
+    mouse.active = false; hovered = null; tooltip.style.opacity = 0;
+  });
+  heroEl.addEventListener('click', function(e){
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+    const near = findNearest(x,y);
+    if(near && near.ideaId){ openIdeaDetail(near.ideaId); }
+  });
+
+  window.addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden){ if(rafId) cancelAnimationFrame(rafId); rafId=null; }
+    else if(!REDUCE_MOTION){ draw(); }
+  });
+
+  resize();
+  draw();
+})();
+
+
+
+   /* SCROLL REVEAL — animates cards/sections in as they appear */
+(function(){
+  if(!('IntersectionObserver' in window)) return;
+  const REVEAL_SELECTOR = '.idea-card, .project-card, .profile-card, .ws-item';
+  const seen = new WeakSet();
+  const counters = new WeakMap();
+  const io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.1, rootMargin:'0px 0px -30px 0px'});
+  function scan(root){
+    (root || document).querySelectorAll(REVEAL_SELECTOR).forEach(function(elmt){
+      if(seen.has(elmt)) return;
+      seen.add(elmt);
+      elmt.classList.add('reveal');
+      const parent = elmt.parentElement;
+      const idx = parent ? (counters.get(parent) || 0) : 0;
+      if(parent) counters.set(parent, idx + 1);
+      elmt.style.transitionDelay = Math.min(idx * 45, 320) + 'ms';
+      io.observe(elmt);
+    });
+  }
+  scan();
+  const mo = new MutationObserver(function(mutations){
+    mutations.forEach(function(m){
+      if(m.addedNodes && m.addedNodes.length) scan();
+    });
+  });
+  mo.observe(document.body, {childList:true, subtree:true});
+})();
+</script>
+</body>
+</html>
 
 
